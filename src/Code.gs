@@ -110,7 +110,15 @@ function sh_(name) {
   sh_.checked[name] = true;
   return s;
 }
-sh_.checked = {};
+// Header rows are checked once every 6 hours, not on every request (keeps the app fast).
+sh_.checked = (function () {
+  try {
+    const c = CacheService.getScriptCache(), v = 'hdr-' + Object.keys(SHEETS).map(k => SHEETS[k].length).join('.');
+    if (c.get('sheet_headers') === v) { const o = {}; Object.keys(SHEETS).forEach(k => o[k] = true); return o; }
+    c.put('sheet_headers', v, 21600);
+  } catch (e) {}
+  return {};
+})();
 function cell_(v, header) {
   if (v instanceof Date) return Utilities.formatDate(v, CONFIG.TIMEZONE, /time/i.test(header) ? 'HH:mm' : 'yyyy-MM-dd');
   return v === null || v === undefined ? '' : String(v);

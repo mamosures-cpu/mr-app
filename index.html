@@ -1216,11 +1216,23 @@ document.addEventListener('change', function(e){
   if(e.target.id==='impIn' && e.target.files[0]){ readImport(e.target.files[0]); return; } if(e.target.id==='m_date'){ loadMgr(e.target.value); } if(e.target.id==='p_date' && e.target.value){ P.date=e.target.value<D.today?D.today:e.target.value; P.data=null; render(); } if(e.target.id==='v_nd'){ keepVisitInputs(); render(); } });
 
 // ---------- boot ----------
-function refresh(){ return run('boot').then(function(d){ D=d; }); }
+// Last boot data is kept on the phone, so the app opens instantly and updates itself in the background.
+function cacheK(){ return 'mrboot:' + String(KEY).slice(0, 12); }
+function saveBoot(d){ try{ localStorage.setItem(cacheK(), JSON.stringify({at:Date.now(), d:d})); }catch(e){} }
+function cachedBoot(){ try{ var c=JSON.parse(localStorage.getItem(cacheK())||'null'); if(!c || !c.d || Date.now()-c.at > 12*36e5) return null; return c.d; }catch(e){ return null; } }
+function refresh(){ return run('boot').then(function(d){ D=d; saveBoot(d); }); }
 function boot(again){
   if(!KEY){ gate('🔗','Apna link kholiye','Ye app sirf aapke personal link se khulta hai. Manager se apna link WhatsApp pe maangiye.'); return; }
   if(again) busy(true);
-  run('boot').then(function(d){ D=d; busy(false); if(!again || !nav.length) nav=[{s:'home'}]; if(again && cur().s==='manager') M.data=null; render(); }, fail);
+  var c = !again && cachedBoot(), shown = false;
+  if(c){ D=c; nav=[{s:'home'}]; render(); shown=true; }
+  run('boot').then(function(d){ D=d; saveBoot(d); busy(false);
+    if(!shown && (!again || !nav.length)) nav=[{s:'home'}];
+    if(again && cur().s==='manager') M.data=null;
+    if(!shown || (cur().s==='home' && !document.querySelector('.sheet'))) render(); }, function(e){
+    if(shown && !/AUTH/.test((e && e.message) || String(e))){ busy(false); toast('⚠️ Net slow hai · purana data dikh raha hai'); return; }
+    if(/AUTH/.test((e && e.message) || String(e))) try{ localStorage.removeItem(cacheK()); }catch(x){}
+    fail(e); });
 }
 if(window.__DEMO_KEYS) window.__switchDemo=function(role){ KEY=window.__DEMO_KEYS[role]; nav=[]; M={tab:'team',date:'',data:null,open:{}}; L={q:'',type:'',mode:'area'}; V=null; A=null; D=null; $('#layer').innerHTML=''; boot(); };
 boot();
