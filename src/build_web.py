@@ -8,7 +8,10 @@ import json, os, sys
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-API_URL = sys.argv[1] if len(sys.argv) > 1 else 'https://script.google.com/macros/s/AKfycbwFr9beoSX7Lu8hQJo-8j0WR9d7qTcctEkPTUdVPD0rOYlI89Iao8thNy1CFPTgQ3dH/exec'
+API_URLS = sys.argv[1:] or [
+    'https://script.google.com/macros/s/AKfycbwFr9beoSX7Lu8hQJo-8j0WR9d7qTcctEkPTUdVPD0rOYlI89Iao8thNy1CFPTgQ3dH/exec',
+    'https://script.google.com/macros/s/AKfycbwkJFa5TRRrz328YZqrcTKR3cghqAj9-qLF251QRfTE9uDMOxE4ZitFI6FDYaZrBnTB/exec',
+]
 APP_NAME = 'Shashvi MR App'
 OUT = os.path.join(HERE, 'web')
 os.makedirs(OUT, exist_ok=True)
@@ -32,18 +35,20 @@ swap('<base target="_top">\n<meta charset="utf-8">',
 
 swap('var KEY_FROM_URL = <?!= JSON.stringify(key) ?>;',
      "var KEY_FROM_URL = (function(){ try{ return (new URLSearchParams(location.search).get('k')||'').replace(/[^a-zA-Z0-9]/g,'').slice(0,64); }catch(e){ return ''; } })();\n"
-     f"var API_URL = {json.dumps(API_URL)};")
+     f"var API_URLS = {json.dumps(API_URLS)}; var API_I = 0; try{{ API_I = Math.min(+(localStorage.getItem('mrapi')||0)||0, API_URLS.length-1); }}catch(e){{}}")
 swap('var APP_NAME = <?!= JSON.stringify(appName) ?>;', f'var APP_NAME = {json.dumps(APP_NAME)};')
 
 swap("""  google.script.run.withSuccessHandler(res).withFailureHandler(function(e){ rej(e); })[fn].apply(null, [KEY].concat(args)); }); }""",
-     """  var body=JSON.stringify({fn:fn, args:[KEY].concat(args)}), tries=0;
-  (function go(){ tries++;
-    fetch(API_URL, {method:'POST', body:body, headers:{'Content-Type':'text/plain;charset=utf-8'}, credentials:'omit', redirect:'follow'})
+     """  // Tries each server link in turn; the one that answers is remembered on the phone.
+  var body=JSON.stringify({fn:fn, args:[KEY].concat(args)}), tries=0, netErr=function(e){ return /fetch|network|Failed|Load failed|JSON_BAD/i.test(String(e&&e.message)); };
+  (function go(){ tries++; var i=API_I;
+    fetch(API_URLS[i], {method:'POST', body:body, headers:{'Content-Type':'text/plain;charset=utf-8'}, credentials:'omit', redirect:'follow'})
       .then(function(r){ return r.text(); })
-      .then(function(t){ var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('Server se sahi jawab nahi aaya. Thodi der baad try karein.'); }
+      .then(function(t){ var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('JSON_BAD'); }
+        if(i!==API_I){ API_I=i; } try{ localStorage.setItem('mrapi', String(i)); }catch(e){}
         if(j.ok) res(j.data); else rej(new Error(j.error||'Error')); })
-      .catch(function(e){ if(tries<2 && /fetch|network|Failed/i.test(String(e&&e.message))) return setTimeout(go, 1200);
-        rej(/fetch|network|Failed/i.test(String(e&&e.message))?new Error('Server tak nahi pahunch paaye. Net check karke dobara try karein. ('+String(e&&e.message)+')'):e); });
+      .catch(function(e){ if(netErr(e) && tries < API_URLS.length*2){ API_I=(i+1)%API_URLS.length; return setTimeout(go, 600); }
+        rej(netErr(e)?new Error('Server tak nahi pahunch paaye. Net check karke dobara try karein. ('+String(e&&e.message)+')'):e); });
   })(); }); }""")
 
 # keep the key out of the address bar once saved, so screenshots / shares don't leak it
