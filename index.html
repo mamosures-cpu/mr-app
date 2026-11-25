@@ -300,7 +300,7 @@ function run(fn){ var args = Array.prototype.slice.call(arguments, 1); return ne
       .then(function(t){ var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('Server se sahi jawab nahi aaya. Thodi der baad try karein.'); }
         if(j.ok) res(j.data); else rej(new Error(j.error||'Error')); })
       .catch(function(e){ if(tries<2 && /fetch|network|Failed/i.test(String(e&&e.message))) return setTimeout(go, 1200);
-        rej(/fetch|network|Failed/i.test(String(e&&e.message))?new Error('Internet nahi hai ya bahut slow hai. Net check karke dobara try karein.'):e); });
+        rej(/fetch|network|Failed/i.test(String(e&&e.message))?new Error('Server tak nahi pahunch paaye. Net check karke dobara try karein. ('+String(e&&e.message)+')'):e); });
   })(); }); }
 function busy(on){
   if(on && !document.querySelector('.busy')){ var b=document.createElement('div'); b.className='busy'; b.innerHTML='<div class="spin"></div>'; document.body.appendChild(b); }

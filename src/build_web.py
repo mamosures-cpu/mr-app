@@ -43,7 +43,7 @@ swap("""  google.script.run.withSuccessHandler(res).withFailureHandler(function(
       .then(function(t){ var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('Server se sahi jawab nahi aaya. Thodi der baad try karein.'); }
         if(j.ok) res(j.data); else rej(new Error(j.error||'Error')); })
       .catch(function(e){ if(tries<2 && /fetch|network|Failed/i.test(String(e&&e.message))) return setTimeout(go, 1200);
-        rej(/fetch|network|Failed/i.test(String(e&&e.message))?new Error('Internet nahi hai ya bahut slow hai. Net check karke dobara try karein.'):e); });
+        rej(/fetch|network|Failed/i.test(String(e&&e.message))?new Error('Server tak nahi pahunch paaye. Net check karke dobara try karein. ('+String(e&&e.message)+')'):e); });
   })(); }); }""")
 
 # keep the key out of the address bar once saved, so screenshots / shares don't leak it
