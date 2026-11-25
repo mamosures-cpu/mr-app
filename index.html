@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Shashvi MR App</title>
+<meta name="theme-color" content="#0B2545">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="robots" content="noindex">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#F3F5F9;--card:#FFFFFF;--ink:#0F1B2D;--muted:#5F6B7E;--line:#E2E7EF;
+  --pri:#0A5C7A;--pri-ink:#FFFFFF;--pri-soft:#E3F1F6;--navy:#0B2545;--gold:#F39C12;
+  --sh:0 1px 2px rgba(15,27,45,.05),0 2px 8px rgba(15,27,45,.04);
+  --doc:#2B63B5;--doc-soft:#E2ECFA;--che:#8A4FB8;--che-soft:#F1E6FA;--sto:#B5650B;--sto-soft:#FCEEDC;
+  --red:#C3392B;--red-soft:#FBE3E0;--amb:#B97A06;--amb-soft:#FCF1D6;--wa:#1DA851;
+  --r:14px;--f:"Inter","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+[hidden]{display:none!important}
+.app{max-width:640px;margin:0 auto;min-height:100vh;padding:0 14px 96px}
+.top{position:sticky;top:0;z-index:20;background:var(--pri);color:var(--pri-ink);margin:0 -14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.top h1{font-size:1.1rem;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .back{border:0;background:rgba(255,255,255,.18);color:inherit;width:40px;height:40px;border-radius:10px;font-size:1.3rem;cursor:pointer;flex:none}
+.top small{opacity:.85;font-size:.8rem}
+.stack{display:flex;flex-direction:column;gap:14px;padding-top:14px}
+.hello{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.hello h2{margin:0;font-size:1.35rem}
+.hello p{margin:0;color:var(--muted);font-size:.9rem}
+.area{background:var(--card);border:2px solid var(--pri);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;width:100%;text-align:left}
+.area .ic{font-size:1.8rem}
+.area b{display:block;font-size:1.1rem}
+.area span{color:var(--muted);font-size:.82rem}
+.area .chg{margin-left:auto;background:var(--pri-soft);color:var(--pri);font-weight:700;border-radius:8px;padding:6px 10px;font-size:.85rem;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card);border-radius:var(--r);padding:10px;text-align:center;border:1px solid var(--line)}
+.stat b{display:block;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;text-align:center;position:relative;min-height:122px;justify-content:center;text-decoration:none}
+.tile:active{transform:scale(.97)}
+.tile .em{font-size:2.4rem;line-height:1}
+.tile b{font-size:1.05rem}
+.tile small{color:var(--muted);font-size:.76rem;margin-top:-4px}
+.tile .badge{position:absolute;top:8px;right:8px;background:var(--red);color:#fff;border-radius:99px;font-size:.8rem;font-weight:700;padding:1px 8px}
+.tile.big{grid-column:span 2;flex-direction:row;min-height:84px;gap:14px;background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.tile.big small{color:inherit;opacity:.85}
+.tile.big div{text-align:left;display:flex;flex-direction:column}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;min-height:48px;background:var(--card);border:1px solid var(--line)}
+.btn.pri{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.btn.wa{background:var(--wa);color:#fff;border-color:var(--wa)}
+.btn.red{color:var(--red)}
+.btn.full{width:100%}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:.88rem;border-radius:10px}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>.btn{flex:1 1 auto;white-space:nowrap}
+.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card);font-size:1rem}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:99px;padding:8px 14px;font-weight:600;cursor:pointer;font-size:.95rem;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft);color:var(--pri)}
+.party{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.party .main{display:flex;gap:12px;padding:12px 14px;cursor:pointer;align-items:center}
+.pic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;flex:none}
+.pic.Doctor{background:var(--doc-soft)}.pic.Chemist{background:var(--che-soft)}.pic.Stockist{background:var(--sto-soft)}
+.party .info{flex:1;min-width:0}
+.party .name{font-weight:700;font-size:1.02rem;overflow-wrap:anywhere}
+.party .sub{color:var(--muted);font-size:.84rem;overflow-wrap:anywhere}
+.pill{font-size:.74rem;font-weight:700;border-radius:99px;padding:2px 8px;white-space:nowrap;display:inline-block}
+.pill.due{background:var(--amb-soft);color:var(--amb)}
+.pill.done{background:var(--pri-soft);color:var(--pri)}
+.pill.late{background:var(--red-soft);color:var(--red)}
+.pill.cat{background:#0000000d;color:var(--muted)}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.acts a,.acts button{border:0;background:none;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.74rem;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:none}
+.acts a+a,.acts a+button,.acts button+a,.acts button+button{border-left:1px solid var(--line)}
+.acts .em{font-size:1.35rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.card h3{margin:0 0 10px;font-size:1rem}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.lbl{font-weight:700;font-size:.92rem}
+.in{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--card);font-size:1rem;min-width:0}
+textarea.in{min-height:80px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.type{border:2px solid var(--line);background:var(--card);border-radius:var(--r);padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-weight:700}
+.type .em{font-size:2rem}
+.type[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft)}
+.mood{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mood button{border:2px solid var(--line);background:var(--card);border-radius:var(--r);padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-weight:700;font-size:.9rem}
+.mood .em{font-size:2rem}
+.mood button[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft)}
+.qty{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.qty:first-child{border-top:0}
+.qty .n{display:flex;align-items:center;gap:8px}
+.qty button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:1.4rem;font-weight:700;cursor:pointer}
+.qty output{min-width:34px;text-align:center;font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:.95rem}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;overflow-wrap:anywhere}
+.hist{display:flex;flex-direction:column;gap:10px}
+.h{border-left:3px solid var(--line);padding-left:10px}
+.h.visit{border-color:var(--pri)}
+.h .when{font-size:.8rem;color:var(--muted)}
+.h p{margin:2px 0 0;overflow-wrap:anywhere;font-size:.92rem}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.empty .em{font-size:2.6rem;display:block}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet .box{background:var(--bg);width:100%;max-width:640px;border-radius:18px 18px 0 0;padding:16px 14px 24px;display:flex;flex-direction:column;gap:12px;max-height:88vh;overflow-y:auto}
+.sheet h3{margin:0;font-size:1.15rem}
+.big-choice{display:grid;grid-template-columns:1fr;gap:8px}
+.big-choice button,.big-choice a{border:2px solid var(--line);background:var(--card);border-radius:var(--r);padding:14px;font-size:1.05rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;text-decoration:none}
+.big-choice .em{font-size:1.6rem}
+.busy{position:fixed;inset:0;background:rgba(243,246,244,.7);z-index:90;display:grid;place-items:center}
+.spin{width:44px;height:44px;border:4px solid var(--pri-soft);border-top-color:var(--pri);border-radius:50%;animation:s 0.8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;z-index:95;font-weight:600;max-width:calc(100% - 28px);text-align:center}
+.ok-big{text-align:center;padding:20px 0 6px}
+.ok-big .em{font-size:4rem}
+.ok-big h2{margin:6px 0 0}
+.report{white-space:pre-wrap;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;font-size:.92rem;overflow-wrap:anywhere}
+.mgr-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.mgr-tabs button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 4px;font-weight:700;font-size:.84rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.mgr-tabs .em{font-size:1.25rem}
+.mgr-tabs button[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft);color:var(--pri)}
+.mr{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.mr-h{display:flex;justify-content:space-between;gap:8px;align-items:center;cursor:pointer}
+.mr-h b{font-size:1.05rem}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.nums div{background:var(--bg);border-radius:10px;padding:6px}
+.nums b{display:block;font-size:1.2rem;font-variant-numeric:tabular-nums}
+.nums span{font-size:.74rem;color:var(--muted)}
+.vlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.vlist .v{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);align-items:flex-start;font-size:.9rem}
+.vlist .v:last-child{border-bottom:0}
+.vlist .t{font-variant-numeric:tabular-nums;color:var(--muted);width:44px;flex:none}
+.vlist .g{flex:1;min-width:0;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:.78rem;color:var(--muted)}
+td.n{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.linkbox{font-size:.78rem;background:var(--bg);border-radius:8px;padding:8px;overflow-wrap:anywhere;user-select:all}
+.muted{color:var(--muted)}
+.gate{min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px;padding:20px}
+.gate .em{font-size:4rem}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;box-shadow:0 -4px 16px rgba(0,0,0,.06);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bnav .in-nav{display:grid;grid-template-columns:repeat(5,1fr);width:100%;max-width:640px}
+.bnav button{border:0;background:none;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:1px;font-weight:700;font-size:.72rem;color:var(--muted);cursor:pointer;position:relative}
+.bnav .em{font-size:1.55rem;line-height:1.2;filter:grayscale(.6);opacity:.75}
+.bnav button[aria-current="page"]{color:var(--pri)}
+.bnav button[aria-current="page"] .em{filter:none;opacity:1}
+.bnav button[aria-current="page"]::before{content:"";position:absolute;top:0;left:22%;right:22%;height:3px;border-radius:0 0 3px 3px;background:var(--pri)}
+.bnav .dot{position:absolute;top:4px;right:calc(50% - 22px);background:var(--red);color:#fff;border-radius:99px;font-size:.66rem;padding:0 5px}
+.callrow{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:10px}
+.callrow .info{flex:1;min-width:0}
+.callrow .name{font-weight:700;overflow-wrap:anywhere}
+.callrow .sub{color:var(--muted);font-size:.82rem}
+.cbtn{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:1.6rem;text-decoration:none;border:0;cursor:pointer;flex:none}
+.cbtn.call{background:var(--pri);color:#fff}
+.cbtn.wa{background:#E3F6EA}
+.cbtn[disabled]{opacity:.3}
+.hint{background:var(--pri-soft);border-radius:var(--r);padding:10px 14px;font-size:.9rem}
+.bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--amb);border-radius:99px}
+.bar i.ok{background:var(--pri)}
+.att{display:flex;gap:12px;align-items:center}
+.att .em{font-size:1.7rem}
+.slot{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--line);border-radius:12px;padding:10px 12px}
+.slot.done{border-left-color:var(--pri)}.slot.notmet{border-left-color:var(--red)}.slot.late{border-left-color:var(--amb)}
+.slot .tm{font-weight:800;font-variant-numeric:tabular-nums;width:54px;flex:none;font-size:1.08rem}
+.slot .g{flex:1;min-width:0;cursor:pointer;overflow-wrap:anywhere}
+.met2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.met2 button{border:2px solid var(--line);background:var(--card);border-radius:var(--r);padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-weight:700}
+.met2 .em{font-size:1.9rem}
+.met2 button[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft)}
+.met2 button.no[aria-pressed="true"]{border-color:var(--red);background:var(--red-soft)}
+.rc{border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.rc .r2{display:grid;grid-template-columns:1fr 76px 44px;gap:6px}
+.trow{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.trow .d{width:78px;flex:none;font-size:.88rem;font-variant-numeric:tabular-nums}
+.trow.sun .d{color:var(--red)}
+.trow .in{padding:8px 10px}
+.bday{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.bday:first-of-type{border-top:0}
+/* ===== professional theme ===== */
+body{-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+.top{background:linear-gradient(135deg,var(--navy) 0%,var(--pri) 100%);padding:12px 14px 14px;box-shadow:0 2px 10px rgba(11,37,69,.18)}
+.top h1{font-weight:700;font-size:1.06rem;letter-spacing:-.01em}
+.top small{font-weight:500;opacity:.78;font-size:.76rem}
+.top .back{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:10px;font-size:1.15rem}
+.logo{width:42px;height:42px;border-radius:12px;background:#fff;display:grid;place-items:center;flex:none;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.logo img{width:40px;height:40px;display:block}
+.brandlogo{width:150px;height:150px;display:block;margin:0 auto}
+.foot img{width:84px;height:84px;display:block;margin:0 auto 6px;border-radius:18px;background:#fff;box-shadow:var(--sh)}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.hero .av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--pri),var(--navy));color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.2rem;flex:none}
+.hero h2{margin:0;font-size:1.12rem;font-weight:700;line-height:1.25}
+.hero p{margin:2px 0 0;color:var(--muted);font-size:.84rem}
+.hero small{color:var(--muted);font-size:.8rem}
+.hero .role{margin-left:auto;align-self:flex-start;background:var(--pri-soft);color:var(--pri);font-weight:700;font-size:.72rem;border-radius:99px;padding:3px 10px;letter-spacing:.03em}
+.card,.party,.mr,.stat,.callrow,.slot,.tile,.area,.report{box-shadow:var(--sh);border-color:var(--line)}
+.card h3{font-weight:700;font-size:.98rem;color:var(--navy)}
+.lbl{color:var(--navy)}
+.stat{padding:12px 8px}
+.stat b{color:var(--navy);font-weight:800;font-size:1.45rem}
+.stat span{font-weight:500}
+.area{border:1px solid var(--line);border-left:4px solid var(--pri);padding:12px 14px}
+.area .ic{width:42px;height:42px;border-radius:12px;background:var(--pri-soft);display:grid;place-items:center;font-size:1.3rem}
+.area b{color:var(--navy)}
+.tiles{gap:10px}
+.tile{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:1px;align-items:center;justify-items:start;text-align:left;min-height:78px;padding:12px;border-radius:14px}
+.tile .em{grid-row:1 / span 2;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.35rem;background:var(--pri-soft)}
+.tile b{grid-column:2;font-size:.92rem;font-weight:700;color:var(--navy);line-height:1.25}
+.tile small{grid-column:2;margin:0;font-size:.74rem}
+.tile.big{grid-column:span 2;grid-template-rows:auto;min-height:72px;background:linear-gradient(135deg,var(--navy),var(--pri));border:0}
+.tile.big .em{grid-row:auto;background:rgba(255,255,255,.14)}
+.tile.big b{color:#fff}
+.tile.big div{grid-column:2;width:100%}
+.tile[style*="var(--card)"] b,.tile[style*="dashed"] b{color:var(--navy)}
+.tile[style*="var(--card)"] .em,.tile[style*="dashed"] .em{background:var(--pri-soft)}
+.tile[style*="background:var(--ink)"]{background:var(--navy)!important;border-color:var(--navy)!important}
+.tile[style*="background:var(--ink)"] .em{background:rgba(255,255,255,.12)}
+.tile[style*="background:var(--ink)"] b{color:#fff}
+.tiles>.tile:not(.big):nth-of-type(6n+1) .em{background:#FFF4DE}
+.tiles>.tile:not(.big):nth-of-type(6n+2) .em{background:#E4F4EA}
+.tiles>.tile:not(.big):nth-of-type(6n+3) .em{background:#EDE9FB}
+.tiles>.tile:not(.big):nth-of-type(6n+4) .em{background:#E3EEFB}
+.tiles>.tile:not(.big):nth-of-type(6n+5) .em{background:#FCE8EC}
+.tiles>.tile:not(.big):nth-of-type(6n) .em{background:#E3F1F6}
+.tile .badge{top:8px;right:8px}
+.tile b{padding-right:16px}
+.tile.big[style*="var(--card)"]{background:var(--card)!important;border:1px solid var(--line)!important;border-left:4px solid var(--pri)!important}
+.tile.big[style*="dashed"]{border:2px dashed var(--pri)!important}
+.btn{border-radius:11px;font-weight:600;min-height:46px;box-shadow:0 1px 1px rgba(15,27,45,.04)}
+.btn.pri{background:var(--pri);box-shadow:0 2px 6px rgba(10,92,122,.25)}
+.btn.wa{box-shadow:0 2px 6px rgba(29,168,81,.25)}
+.chip{border-width:1px;font-weight:500;font-size:.9rem;padding:7px 13px}
+.chip[aria-pressed="true"]{border-color:var(--pri);background:var(--pri);color:#fff}
+.in,.search{border-color:#D5DCE6;border-radius:11px}
+.in:focus,.search:focus{outline:none;border-color:var(--pri);box-shadow:0 0 0 3px rgba(10,92,122,.14)}
+.pill{font-weight:600;border-radius:6px;padding:2px 8px}
+.party .name{color:var(--navy)}
+.acts{background:#FAFBFD}
+.acts a,.acts button{color:#4A5568;font-weight:600}
+.mgr-tabs button{font-weight:600;color:#3B4658;box-shadow:0 1px 1px rgba(15,27,45,.04)}
+.mgr-tabs button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.type[aria-pressed="true"],.mood button[aria-pressed="true"],.met2 button[aria-pressed="true"]{box-shadow:0 0 0 3px rgba(10,92,122,.12)}
+.hint{background:#EEF5FA;border:1px solid #D6E6F0;color:#22364F}
+.bnav{border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(15,27,45,.06)}
+.bnav button{font-weight:600}
+.bnav button[aria-current="page"]{color:var(--pri)}
+.bnav button[aria-current="page"]::before{background:var(--pri)}
+.sheet .box{border-radius:20px 20px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.15)}
+.sheet .box::before{content:"";width:40px;height:4px;border-radius:4px;background:#CBD3DE;align-self:center;margin:-6px 0 2px}
+.big-choice button,.big-choice a{border-width:1px;font-weight:600;font-size:1rem;box-shadow:var(--sh)}
+.bar{height:7px;background:#E8EDF3}
+.bar i{background:var(--gold)}
+.bar i.ok{background:#16A34A}
+.toast{border-radius:12px;background:var(--navy);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.foot{text-align:center;color:var(--muted);font-size:.74rem;padding:8px 0 0}
+</style>
+</head>
+<body>
+<div class="app" id="app"><div class="gate"><img class="brandlogo" alt="Shashvi Remedies" src="data:image/webp;base64,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"><div class="spin"></div><p class="muted">Khul raha hai… / Loading…</p></div></div>
+<div id="layer"></div>
+<script>
+(function(){
+'use strict';
+var LOGO = 'data:image/webp;base64,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';
+var LOGO_BIG = 'data:image/webp;base64,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';
+var KEY_FROM_URL = (function(){ try{ return (new URLSearchParams(location.search).get('k')||'').replace(/[^a-zA-Z0-9]/g,'').slice(0,64); }catch(e){ return ''; } })();
+var API_URL = "https://script.google.com/macros/s/AKfycbwkJFa5TRRrz328YZqrcTKR3cghqAj9-qLF251QRfTE9uDMOxE4ZitFI6FDYaZrBnTB/exec";
+var APP_NAME = "Shashvi MR App";
+
+// ---------- state ----------
+var KEY = KEY_FROM_URL || store('mrkey') || '';
+if (KEY_FROM_URL) { store('mrkey', KEY_FROM_URL); try{ history.replaceState(null, '', location.pathname); }catch(e){} }
+var D = null;              // boot data
+var nav = [];              // screen stack
+var V = null;              // visit form state
+var A = null;              // add form state
+var M = {tab:'team', date:'', data:null, open:{}}; // manager
+var L = {q:'', type:'', mode:'area'};
+var T = {month:'', rows:null}; // tour plan
+
+function store(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+function $(s){ return document.querySelector(s); }
+function esc(v){ return String(v==null?'':v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function run(fn){ var args = Array.prototype.slice.call(arguments, 1); return new Promise(function(res, rej){
+  var body=JSON.stringify({fn:fn, args:[KEY].concat(args)}), tries=0;
+  (function go(){ tries++;
+    fetch(API_URL, {method:'POST', body:body, headers:{'Content-Type':'text/plain;charset=utf-8'}, credentials:'omit', redirect:'follow'})
+      .then(function(r){ return r.text(); })
+      .then(function(t){ var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('Server se sahi jawab nahi aaya. Thodi der baad try karein.'); }
+        if(j.ok) res(j.data); else rej(new Error(j.error||'Error')); })
+      .catch(function(e){ if(tries<2 && /fetch|network|Failed/i.test(String(e&&e.message))) return setTimeout(go, 1200);
+        rej(/fetch|network|Failed/i.test(String(e&&e.message))?new Error('Internet nahi hai ya bahut slow hai. Net check karke dobara try karein.'):e); });
+  })(); }); }
+function busy(on){
+  if(on && !document.querySelector('.busy')){ var b=document.createElement('div'); b.className='busy'; b.innerHTML='<div class="spin"></div>'; document.body.appendChild(b); }
+  if(!on){ var x=document.querySelector('.busy'); if(x) x.remove(); } }
+var tt; function toast(m){ var t=$('.toast'); if(!t){ t=document.createElement('div'); t.className='toast'; document.body.appendChild(t); } t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(function(){ t.hidden=true; }, 2800); }
+function fail(e){ busy(false); var m = (e && e.message) || String(e);
+  if(/AUTH/.test(m)){ D=null; gate('🔒','Link band hai','Aapka link kaam nahi kar raha. Manager se naya link maangiye.'); return; }
+  toast(m.replace(/^Error:\s*/,'') || 'Kuch galat hua, dobara try karein'); }
+function call(fn){ var a=arguments; busy(true); return run.apply(null, a).then(function(r){ busy(false); return r; }, function(e){ fail(e); throw e; }); }
+
+// ---------- dates & links ----------
+function pad(n){ return (n<10?'0':'')+n; }
+function addDays(ymd, n){ var d=new Date(ymd+'T12:00:00'); d.setDate(d.getDate()+n); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function fdate(s){ if(!s) return ''; var d=new Date(s+'T12:00:00'); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+function niceDay(s){ if(!s||!D) return fdate(s); if(s===D.today) return 'Aaj'; if(s===addDays(D.today,1)) return 'Kal'; if(s===addDays(D.today,-1)) return 'Kal (beeta)'; return fdate(s); }
+function digits(p){ return String(p||'').replace(/\D/g,''); }
+function intl(p){ var d=digits(p); if(d.length===10) return '91'+d; if(d.length===11&&d[0]==='0') return '91'+d.slice(1); return d; }
+function waUrl(p, text){ var n=intl(p); return 'https://wa.me/'+(n.length>=11?n:'')+'?text='+encodeURIComponent(text||''); }
+function mapUrl(p){ if(p.lat&&p.lng) return 'https://www.google.com/maps/search/?api=1&query='+p.lat+','+p.lng;
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([p.clinic,p.address,p.area].filter(Boolean).join(', ')||p.name); }
+function calUrl(title, date, time, details){ var t=(time||'11:00').replace(':',''); var s=date.replace(/-/g,'')+'T'+t+'00';
+  var h=+t.slice(0,2), m=+t.slice(2); var em=h*60+m+30; var e=date.replace(/-/g,'')+'T'+pad(Math.floor(em/60)%24)+pad(em%60)+'00';
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+s+'/'+e+'&ctz=Asia/Kolkata&details='+encodeURIComponent(details||''); }
+function locate(){ return new Promise(function(res){ if(!navigator.geolocation) return res(null); var done=false;
+  var t=setTimeout(function(){ if(!done){ done=true; res(null); } }, 9000);
+  try{ navigator.geolocation.getCurrentPosition(function(p){ if(done) return; done=true; clearTimeout(t); res({lat:p.coords.latitude,lng:p.coords.longitude}); },
+    function(){ if(done) return; done=true; clearTimeout(t); res(null); }, {enableHighAccuracy:true, timeout:8000, maximumAge:60000}); }catch(e){ done=true; clearTimeout(t); res(null); } }); }
+var TYPE = {Doctor:{em:'🩺',hi:'डॉक्टर',en:'Doctor'}, Chemist:{em:'💊',hi:'केमिस्ट',en:'Chemist'}, Stockist:{em:'📦',hi:'स्टॉकिस्ट',en:'Stockist'}};
+var MOOD = [['Hot','🔥','अच्छा'],['Warm','🙂','ठीक'],['Cold','❄️','कम']];
+var ASSESS = [['Prescribe kar rahe','✍️'],['Try karenge','🤔'],['Interest nahi','❌']];
+var SPECS = ['GP','Physician','Gynaec','Onco','Surgeon','Ortho','Other'];
+var NOTMET = [['OPD band','🚪','OPD बंद'],['Busy','⏳','बहुत भीड़ / Busy'],['Chhutti pe','🏖️','छुट्टी पर'],['Bahar gaye','🚗','बाहर गए'],['Band tha','🔒','दुकान/क्लिनिक बंद'],['Other','✍️','और कुछ']];
+var SLOT = {done:['done','✅ मिल लिए'],notmet:['late','❌ नहीं मिले'],late:['late','⏰ समय निकल गया'],pending:['cat','⏳ बाकी']};
+var WEEK = ['रवि','सोम','मंगल','बुध','गुरु','शुक्र','शनि'];
+function slotPill(st){ var x=SLOT[st]||SLOT.pending; return '<span class="pill '+x[0]+'">'+x[1]+'</span>'; }
+function bar(n, of){ var p=of?Math.min(100,Math.round(100*n/of)):0; return '<div class="bar"><i class="'+(of&&n>=of?'ok':'')+'" style="width:'+p+'%"></i></div>'; }
+function drName(p){ return p.type==='Doctor'&&!/^dr/i.test(p.name)?'Dr. '+p.name:p.name; }
+
+// ---------- screens ----------
+function gate(em, title, text){ $('#layer').innerHTML=''; $('#app').innerHTML='<div class="gate"><img class="brandlogo" src="'+LOGO_BIG+'" alt="Shashvi Remedies"><div class="em">'+em+'</div><h2>'+esc(title)+'</h2><p class="muted">'+esc(text)+'</p></div>'; }
+function top(title, sub, back){ return '<div class="top">'+(back?'<button class="back" data-act="back" aria-label="Back">←</button>':'<span class="logo"><img src="'+LOGO+'" alt="Shashvi Remedies"></span>')+'<h1>'+esc(title)+(sub?'<br><small>'+esc(sub)+'</small>':'')+'</h1>'+(back?'<button class="back" data-act="home" aria-label="Home">🏠</button>':'<button class="back" data-act="refresh" aria-label="Refresh">⟳</button>')+'</div>'; }
+function go(screen, arg){ nav.push({s:screen, a:arg}); render(); window.scrollTo(0,0); }
+function back(){ if(cur().s==='plan') T.rows=null; nav.pop(); if(!nav.length) nav=[{s:'home'}]; render(); window.scrollTo(0,0); }
+function home(){ nav=[{s:'home'}]; render(); window.scrollTo(0,0); }
+function cur(){ return nav[nav.length-1] || {s:'home'}; }
+function render(){ if(!D) return; var c=cur(); var f={home:sHome,list:sList,party:sParty,visit:sVisit,add:sAdd,report:sReport,done:sDone,manager:sManager,calls:sCalls,areas:sAreas,area:sArea,plan:sPlan,tour:sTour,stock:sStock,import:sImport,library:sLibrary,summary:sSummary}[c.s]||sHome; $('#app').innerHTML=f(c.a)+bottomNav(c); after(c); }
+function bottomNav(c){
+  var at={home:'home',done:'home',plan:'home',import:'add',library:'home',summary:'home',tour:'home',stock:'home',list:'list',areas:'list',area:'list',party:'list',visit:'list',add:'add',calls:'calls',manager:'team',report:'report'}[c.s]||'home';
+  var f=followups().length;
+  var tabs=[['home','🏠','होम','Home'],['list','📋','लिस्ट','List'],['add','➕','जोड़ें','Add'],['calls','📞','कॉल','Call']];
+  tabs.push(D.user.role==='Manager'?['team','👥','टीम','Team']:['report','📤','रिपोर्ट','Report']);
+  return '<nav class="bnav" aria-label="Menu"><div class="in-nav">'+tabs.map(function(t){ return '<button data-act="tab" data-t="'+t[0]+'"'+(at===t[0]?' aria-current="page"':'')+'><span class="em">'+t[1]+'</span>'+t[2]+'<span style="font-weight:500;font-size:.62rem">'+t[3]+'</span>'+(t[0]==='calls'&&f?'<span class="dot">'+f+'</span>':'')+'</button>'; }).join('')+'</div></nav>';
+}
+function tab(t){ V=null; A=null; L.q=''; L.type='';
+  if(t==='home') return home();
+  nav=[{s:'home'}]; if(t==='list') nav.push({s:'areas'}); if(t==='add') nav.push({s:'add'}); if(t==='calls') nav.push({s:'calls'}); if(t==='team'){ M.tab='team'; nav.push({s:'manager'}); } if(t==='report') nav.push({s:'report'});
+  render(); window.scrollTo(0,0); }
+
+var MONTHS=['जनवरी','फरवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
+function monthName(ym){ return ym?MONTHS[+ym.slice(5,7)-1]+' '+ym.slice(0,4):'—'; }
+function isNew(p){ return p.created && (new Date(D.today)-new Date(p.created))/864e5 <= 30; }
+function sAreas(){
+  var q=L.q.trim().toLowerCase();
+  var h=top('🏙️ एरिया वाइज़ लिस्ट','City → Area → Doctors',true)+'<div class="stack">';
+  h+='<button class="btn pri full" data-act="add" style="min-height:52px">➕ नया डॉक्टर / केमिस्ट / स्टॉकिस्ट जोड़ें</button>';
+  h+='<button class="btn full" data-act="import">📥 Excel / CSV से लिस्ट अपलोड करें</button>';
+  h+='<input class="search" id="q" type="search" placeholder="🔍 एरिया या शहर खोजें / Search" value="'+esc(L.q)+'">';
+  var groups=cityGroups(); var shown=0;
+  groups.forEach(function(g){
+    var areas=g[1].filter(function(a){ return !q || a.toLowerCase().indexOf(q)>=0 || g[0].toLowerCase().indexOf(q)>=0; }); if(!areas.length) return;
+    var inCity=D.parties.filter(function(p){ return g[1].indexOf(p.area)>=0; });
+    h+='<div class="card" style="padding:0;overflow:hidden"><div style="padding:12px 14px;background:var(--pri-soft);display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:1.05rem">🏙️ '+esc(g[0])+'</b><span class="muted" style="font-size:.82rem">'+g[1].length+' एरिया · '+inCity.length+' लोग</span></div>';
+    areas.forEach(function(a){ shown++; var ps=D.parties.filter(function(p){ return p.area===a; }); var c=function(t){ return ps.filter(function(p){ return p.type===t; }).length; }; var nw=ps.filter(isNew).length;
+      h+='<div data-act="area" data-v="'+esc(a)+'" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);cursor:pointer"><span style="font-size:1.4rem">📍</span><div style="flex:1;min-width:0"><b>'+esc(a)+'</b>'+(a===D.todayArea?' <span class="pill done">आज</span>':'')+'<div class="muted" style="font-size:.84rem">🩺 '+c('Doctor')+' · 💊 '+c('Chemist')+' · 📦 '+c('Stockist')+(nw?' · <b style="color:var(--amb)">🆕 '+nw+' नए</b>':'')+'</div></div><span class="muted" style="font-size:1.3rem">›</span></div>'; });
+    h+='</div>'; });
+  if(!shown) h+='<div class="card empty"><span class="em">🏙️</span><p>'+(D.areas.length?'Koi area nahi mila':'Abhi koi area nahi. Pehla doctor jodein, uske saath area aur city likhein.')+'</p></div>';
+  return h+'</div>';
+}
+function sArea(a){
+  var c=cur(); var by=c.by||'added'; var ps=D.parties.filter(function(p){ return p.area===a; });
+  var all=ps.length, nw=ps.filter(isNew).length;
+  if(L.type) ps=ps.filter(function(p){ return p.type===L.type; });
+  var city=(D.areaCity||{})[a]||'';
+  var h=top('📍 '+a, city?'🏙️ '+city:'', true)+'<div class="stack">';
+  h+='<div class="stats"><div class="stat"><b>'+all+'</b><span>कुल / Total</span></div><div class="stat"><b>'+nw+'</b><span>🆕 नए (30 दिन)</span></div><div class="stat"><b>'+ps.filter(function(p){ return p.visitedToday; }).length+'</b><span>✅ आज मिले</span></div></div>';
+  h+='<button class="btn pri full" data-act="add" data-area="'+esc(a)+'" style="min-height:52px">➕ '+esc(a)+' में नया जोड़ें</button>';
+  h+='<div class="chips"><button class="chip" data-act="areaby" data-v="added" aria-pressed="'+(by==='added')+'">📅 जोड़ने की तारीख से</button><button class="chip" data-act="areaby" data-v="visit" aria-pressed="'+(by==='visit')+'">✅ विज़िट की तारीख से</button></div>';
+  h+='<div class="chips">'+['','Doctor','Chemist','Stockist'].map(function(t){ return '<button class="chip" data-act="ltype" data-type="'+t+'" aria-pressed="'+(L.type===t)+'">'+(t?TYPE[t].em+' '+TYPE[t].hi:'सब / All')+'</button>'; }).join('')+'</div>';
+  var key=function(p){ return by==='visit'?(p.lastVisit||''):(p.created||''); };
+  ps.sort(function(x,y){ return key(y).localeCompare(key(x)) || x.name.localeCompare(y.name); });
+  var groups={}, order=[]; ps.forEach(function(p){ var m=key(p).slice(0,7); if(!groups[m]){ groups[m]=[]; order.push(m); } groups[m].push(p); });
+  if(!ps.length) h+='<div class="card empty"><span class="em">🗂️</span><p>Is area mein abhi koi nahi</p></div>';
+  order.forEach(function(m){
+    h+='<div class="lbl" style="font-size:1.05rem;margin-top:4px">'+(m?'🗓️ '+monthName(m):(by==='visit'?'⏳ अभी विज़िट नहीं हुई':'🗓️ तारीख नहीं'))+' <span class="muted" style="font-weight:500">· '+groups[m].length+(by==='visit'?(m?' को मिले':' लोग'):' जोड़े')+'</span></div>';
+    groups[m].forEach(function(p){ h+=partyCard(p); });
+  });
+  return h+'</div>';
+}
+function sCalls(){
+  var list=D.parties.filter(function(p){ return digits(p.phone); });
+  var q=L.q.trim().toLowerCase(); if(q) list=list.filter(function(p){ return [p.name,p.clinic,p.area,p.phone].join(' ').toLowerCase().indexOf(q)>=0; });
+  if(L.type==='follow') list=list.filter(function(p){ return p.nextDate && p.nextDate<=D.today && !p.visitedToday; });
+  else if(L.type) list=list.filter(function(p){ return p.type===L.type; });
+  list.sort(function(a,b){ var fa=a.nextDate&&a.nextDate<=D.today?0:1, fb=b.nextDate&&b.nextDate<=D.today?0:1; return fa-fb || (D.todayArea&&(a.area===D.todayArea?0:1)-(b.area===D.todayArea?0:1)) || a.name.localeCompare(b.name); });
+  var h=top('📞 कॉल करें / Tele-calling','Aaj '+D.stats.calls+' call ho chuki',true)+'<div class="stack">';
+  h+='<div class="hint">📞 हरे बटन से कॉल करें। कॉल के बाद ऐप पूछेगा "क्या हुआ?" — जवाब दबाएं, कॉल गिनती में जुड़ जाएगी।<br><small class="muted">Green button se call karein. Wapas aake jawab dabayein, call count ho jaayegi.</small></div>';
+  h+='<input class="search" id="q" type="search" placeholder="🔍 नाम खोजें / Search name" value="'+esc(L.q)+'">';
+  h+='<div class="chips">'+[['','सब / All'],['follow','🔔 फॉलो-अप'],['Doctor','🩺 डॉक्टर'],['Chemist','💊 केमिस्ट'],['Stockist','📦 स्टॉकिस्ट']].map(function(t){ return '<button class="chip" data-act="ltype" data-type="'+t[0]+'" aria-pressed="'+(L.type===t[0])+'">'+t[1]+'</button>'; }).join('')+'</div>';
+  if(!list.length) h+='<div class="card empty"><span class="em">📵</span><p>Koi number nahi mila. Doctor/Chemist jodte waqt mobile number daaliye.</p><button class="btn pri" data-act="tab" data-t="add">➕ नया जोड़ें / Add</button></div>';
+  list.forEach(function(p){ var tel=digits(p.phone);
+    h+='<div class="callrow"><div class="pic '+esc(p.type)+'" data-act="party" data-id="'+esc(p.id)+'" style="cursor:pointer">'+TYPE[p.type].em+'</div><div class="info" data-act="party" data-id="'+esc(p.id)+'" style="cursor:pointer"><div class="name">'+esc(p.type==='Doctor'&&!/^dr/i.test(p.name)?'Dr. '+p.name:p.name)+'</div><div class="sub">'+esc([p.area,p.phone].filter(Boolean).join(' · '))+'</div><div style="margin-top:3px">'+statusPill(p)+'</div></div>'
+      +'<button class="cbtn wa" data-act="wa" data-id="'+esc(p.id)+'" aria-label="WhatsApp">💬</button>'
+      +'<button class="cbtn call" data-act="callpick" data-id="'+esc(p.id)+'" aria-label="Call">📞</button></div>'; });
+  return h+'</div>';
+}
+function after(c){ if(c.s==='report' && c.a===undefined){ call('dayReport').then(function(t){ c.a=t; render(); }); } if(c.s==='party' && !c.files){ c.files=false; run('partyFiles', c.a).then(function(f){ c.files=f; if(cur()===c) render(); }).catch(function(){ c.files=[]; }); } if(c.s==='party' && !c.hist){ run('partyHistory', c.a).then(function(h){ c.hist=h; if(cur()===c) render(); }).catch(function(){}); } if(c.s==='manager' && !M.data){ loadMgr(); } if(c.s==='summary' && (!SM.data || SM.data.month!==SM.month)){ if(D.user.role==='Manager' && !M.data){ run('managerData', D.today).then(function(d){ M.data=d; M.date=d.date; if(cur()===c) render(); }).catch(function(){}); } loadSummary().catch(fail); } if(c.s==='plan' && (!P.data || P.data.date!==planDate())){ loadPlan().catch(fail); } if(c.s==='tour' && T.rows===null){ T.rows=false; run('tourPlan', T.month).then(function(r){ T.rows=r; if(cur()===c) render(); }).catch(fail); } }
+
+function followups(){ return D.parties.filter(function(p){ return p.nextDate && p.nextDate<=D.today && !p.visitedToday; }); }
+
+function attCard(){
+  var a=D.attendance||{};
+  if(!a.start && !a.end) return '<button class="btn pri full" data-act="daystart" style="min-height:62px;font-size:1.12rem;flex-direction:column;gap:0"><span>🟢 दिन शुरू करें / Start day</span><small style="font-weight:500;opacity:.85">काम पर निकलते समय दबाएं · location save होगी</small></button>';
+  if(!a.end) return '<div class="card att"><span class="em">🟢</span><div style="flex:1"><b>काम चालू है / On duty</b><div class="muted" style="font-size:.85rem">शुरू: '+esc(a.start||'–')+'</div></div><button class="btn sm red" data-act="dayend">🔴 दिन खत्म</button></div>';
+  return '<div class="card att"><span class="em">✅</span><div style="flex:1"><b>आज का काम पूरा</b><div class="muted" style="font-size:.85rem">'+esc(a.start||'–')+' से '+esc(a.end)+' तक</div></div></div>';
+}
+function targetCard(){ var t=D.target; if(!t) return '';
+  var done=t.doctorsMet>=t.doctors && t.chemistsMet>=t.chemists;
+  var row=function(em,lbl,n,of){ return '<div><div style="display:flex;justify-content:space-between;font-size:.9rem"><span>'+em+' '+lbl+'</span><b>'+n+' / '+of+'</b></div>'+bar(n,of)+'</div>'; };
+  return '<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="lbl">🎯 आज का टारगेट / Target'+(done?' 🎉 पूरा!':'')+'</div>'+row('🩺','डॉक्टर',t.doctorsMet,t.doctors)+row('💊','केमिस्ट / स्टॉकिस्ट',t.chemistsMet,t.chemists)+'</div>';
+}
+function planTile(){ var pl=D.dayPlan||[];
+  if(!pl.length) return '<button class="tile big" data-act="plan" style="background:var(--card);color:var(--ink);border:2px dashed var(--pri)"><span class="em">🗓️</span><div><b>आज का प्लान बनाएं</b><small class="muted">Time-box: किससे कितने बजे मिलना है</small></div></button>';
+  var done=pl.filter(function(s){ return s.status==='done'; }).length;
+  var next=pl.filter(function(s){ return s.status==='pending'||s.status==='late'; })[0];
+  return '<button class="tile big" data-act="plan" style="background:var(--card);color:var(--ink);border:2px solid var(--pri)"><span class="em">🗓️</span><div style="flex:1;min-width:0"><b>आज का प्लान · '+done+'/'+pl.length+' पूरा</b>'+bar(done,pl.length)
+    +'<small class="muted" style="margin-top:4px">'+(next?'⏭️ अगला: <b>'+esc(next.time)+'</b> · '+esc(next.party)+(next.status==='late'?' · ⏰ देर':''):'🎉 प्लान के सब काम हो गए')+'</small></div></button>';
+}
+function bdayCard(){ var b=D.birthdays||[]; if(!b.length) return '';
+  return '<div class="card"><h3>🎂 जन्मदिन / सालगिरह · अगले 7 दिन</h3>'+langChips()+b.map(function(x){ var p=party(x.id)||x; var nm=drName(x);
+    var txt=msg(x.kind.indexOf('Birthday')>=0?'bday':'anniv', party(x.id)||x);
+    return '<div class="bday"><span style="font-size:1.5rem">'+(x.kind.indexOf('Birthday')>=0?'🎂':'💍')+'</span><div style="flex:1;min-width:0" data-act="party" data-id="'+esc(x.id)+'"><b>'+esc(nm)+'</b><div class="muted" style="font-size:.84rem">'+(x.days===0?'<b style="color:var(--red)">आज है!</b>':x.days===1?'कल':x.days+' दिन में')+' · '+esc(p.area||'')+'</div></div>'
+      +(digits(x.phone)?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(waUrl(x.phone,txt))+'">💬 बधाई</a>':'')+'</div>'; }).join('')+'</div>';
+}
+function sHome(){
+  var f=followups().length; var u=D.user;
+  var dt=new Date(D.today+'T12:00:00').toLocaleDateString('hi-IN',{weekday:'long',day:'numeric',month:'long'});
+  var h=top(APP_NAME, D.company||'Field force app')+'<div class="stack">';
+  h+='<div class="hero"><div class="av">'+esc((u.name||'?').trim().charAt(0).toUpperCase())+'</div><div style="min-width:0"><small>नमस्ते 🙏</small><h2>'+esc(u.name)+'</h2><p>'+esc(dt)+'</p></div><span class="role">'+(u.role==='Manager'?'MANAGER':'MR')+'</span></div>';
+  h+=attCard();
+  h+='<button class="area" data-act="pick-area"><span class="ic">📍</span><div><span>आज का एरिया / Today\'s area</span><b>'+(D.todayArea?esc(D.todayArea):'Chuniye / Select')+'</b></div><span class="chg">'+(D.todayArea?'बदलें':'चुनें')+'</span></button>';
+  h+=targetCard();
+  h+='<div class="stats"><div class="stat"><b>'+D.stats.visits+'</b><span>✅ Visit'+(D.stats.notMet?'<br>❌ '+D.stats.notMet+' नहीं मिले':'')+'</span></div><div class="stat"><b>'+D.stats.calls+'</b><span>📞 Call</span></div><div class="stat"><b>'+D.stats.samples+'</b><span>🎁 Sample</span></div></div>';
+  h+='<div class="tiles">'+planTile();
+  h+='<button class="tile big" data-act="list" data-mode="area"><span class="em">🗺️</span><div><b>आज की लिस्ट</b><small>Today\'s list'+(D.todayArea?' · '+esc(D.todayArea):'')+'</small></div></button>';
+  h+='<button class="tile" data-act="list" data-mode="follow"><span class="em">🔔</span><b>फॉलो-अप</b><small>Follow-up</small>'+(f?'<span class="badge">'+f+'</span>':'')+'</button>';
+  h+='<button class="tile" data-act="tab" data-t="calls"><span class="em">📞</span><b>कॉल करें</b><small>Tele-calling</small></button>';
+  h+='<button class="tile" data-act="report"><span class="em">📤</span><b>शाम की रिपोर्ट</b><small>Evening report</small></button>';
+  h+='<button class="tile" data-act="tab" data-t="list"><span class="em">🏙️</span><b>एरिया वाइज़ लिस्ट</b><small>City / Area list</small></button>';
+  var tp=(D.tour||[]); var tpS=tp.length?(tp.every(function(t){ return t.status==='Approved'; })?'✅ Approved':'⏳ Pending'):'';
+  h+='<button class="tile" data-act="tour"><span class="em">📅</span><b>महीने का टूर प्लान</b><small>Tour plan'+(tpS?' · '+tpS:'')+'</small></button>';
+  var low=(D.stock||[]).filter(function(s){ return s.balance<=5; }).length;
+  h+='<button class="tile" data-act="stock"><span class="em">🎒</span><b>मेरा सैंपल स्टॉक</b><small>My samples</small>'+(low?'<span class="badge">'+low+'</span>':'')+'</button>';
+  h+='<button class="tile" data-act="library"><span class="em">📚</span><b>कैटलॉग / रेट कार्ड</b><small>Brochure · Rate card</small></button>';
+  h+='<button class="tile" data-act="summary"><span class="em">📊</span><b>महीने की रिपोर्ट</b><small>Monthly summary</small></button>';
+  h+='</div>'+bdayCard();
+  if(u.role==='Manager') h+='<div class="lbl" style="margin-top:4px">👔 मैनेजर / Manager</div><div class="tiles"><button class="tile" data-act="tab" data-t="team" style="background:var(--ink);color:#fff;border-color:var(--ink)"><span class="em">👥</span><b>टीम का हिसाब</b><small style="color:#fff;opacity:.8">Team report</small></button><button class="tile" data-act="addmr-go" style="background:var(--ink);color:#fff;border-color:var(--ink)"><span class="em">🧑‍💼</span><b>MR जोड़ें / नाम बदलें / हटाएं</b><small style="color:#fff;opacity:.8">Manage team</small></button></div>';
+  h+='<div class="foot"><img src="'+LOGO_BIG+'" alt="Shashvi Remedies">'+esc(D.company||APP_NAME)+'<br><i>Spreading Health Naturally</i></div></div>';
+  return h;
+}
+
+// ---------- day plan (time-box), any date ----------
+var P = {date:'', data:null, tab:'list', nf:null};
+function planDate(){ return P.date || D.today; }
+function loadPlan(){ var d=planDate(); return run('planSlots', d).then(function(r){ if(planDate()===d){ P.data=r; } if(cur().s==='plan') render(); }); }
+function reloadPlan(){ P.data=null; return (planDate()===D.today?refresh():Promise.resolve()).then(loadPlan); }
+function sPlan(){
+  var dd=planDate(), isToday=dd===D.today;
+  var dl=isToday?'आज':dd===addDays(D.today,1)?'कल':fdate(dd);
+  var h=top('🗓️ '+(isToday?'आज का प्लान':dl+' का प्लान'),'Day plan · '+fdate(dd),true)+'<div class="stack">';
+  h+='<div class="chips">'+[[0,'आज'],[1,'कल'],[2,'परसों']].map(function(o){ var d=addDays(D.today,o[0]); return '<button class="chip" data-act="pdate" data-v="'+d+'" aria-pressed="'+(dd===d)+'">'+o[1]+' · '+esc(fdate(d))+'</button>'; }).join('')+'</div>';
+  h+='<div class="field"><label for="p_date">📅 कोई और तारीख / Other date</label><input class="in" type="date" id="p_date" min="'+D.today+'" value="'+esc(dd)+'"></div>';
+  var r=P.data; if(!r || r.date!==dd) return h+'<div class="card"><p class="muted">Loading…</p></div></div>';
+  var pl=r.slots, done=pl.filter(function(s){ return s.status==='done'; }).length;
+  var area=isToday?D.todayArea:r.area;
+  h+='<div class="hint">⏰ किससे <b>कितने बजे</b> मिलना है, यहाँ लिखें। लिस्ट से चुनें या <b>नया डॉक्टर</b> यहीं जोड़ें। टाइम पर दबाकर बदलें या हटाएं।'+(area?'<br>📍 एरिया: <b>'+esc(area)+'</b>':'')+'</div>';
+  h+='<div class="two"><button class="btn pri" data-act="slotadd">➕ जोड़ें / Add</button><button class="btn" data-act="autoplan">⚡ अपने आप बनाएं</button></div>';
+  if(pl.length) h+='<div class="stats"><div class="stat"><b>'+pl.length+'</b><span>🗓️ प्लान</span></div><div class="stat"><b>'+done+'</b><span>✅ पूरा</span></div><div class="stat"><b>'+(pl.length-done)+'</b><span>⏳ बाकी</span></div></div>';
+  if(!pl.length) h+='<div class="card empty"><span class="em">🗓️</span><p>इस दिन का प्लान खाली है।<br><b>➕ जोड़ें</b> से डॉक्टर और टाइम डालें, या <b>⚡ अपने आप बनाएं</b>।</p></div>';
+  var areas=[]; pl.forEach(function(s){ if(areas.indexOf(s.area||'')<0) areas.push(s.area||''); });
+  areas.forEach(function(a){
+    if(areas.length>1) h+='<div class="lbl" style="margin-top:4px">📍 '+esc(a||'बिना एरिया')+' <span class="muted" style="font-weight:500">· '+pl.filter(function(s){ return (s.area||'')===a; }).length+'</span></div>';
+    pl.filter(function(s){ return (s.area||'')===a; }).forEach(function(s){ var p=party(s.partyId)||{name:s.party,type:s.type};
+      h+='<div class="slot '+esc(s.status)+'"><button class="tm" data-act="slotedit" data-id="'+esc(s.id)+'" style="border:0;background:var(--bg);border-radius:10px;padding:6px 4px;cursor:pointer;font:inherit;font-weight:800" aria-label="Time badlein">'+esc(s.time)+'<br><small style="font-weight:600;color:var(--muted)">✏️</small></button><div class="g" data-act="party" data-id="'+esc(s.partyId)+'"><b>'+(TYPE[s.type]?TYPE[s.type].em:'')+' '+esc(drName(p))+'</b><div class="muted" style="font-size:.82rem">'+esc([s.area,p.phone].filter(Boolean).join(' · '))+'</div><div style="margin-top:3px">'+slotPill(s.status)+'</div></div>'
+        +(isToday&&s.status!=='done'?'<button class="btn sm pri" data-act="visit" data-id="'+esc(s.partyId)+'" aria-label="Visit">✅ मिले</button>':'')
+        +(digits(p.phone)?'<button class="btn sm" data-act="callpick" data-id="'+esc(s.partyId)+'" aria-label="Call">📞</button>':'')+'</div>'; });
+  });
+  return h+'</div>';
+}
+function nextSlotTime(){ var pl=(P.data&&P.data.date===planDate())?P.data.slots:(D.dayPlan||[]); if(!pl.length) return '10:00'; var t=pl[pl.length-1].time.split(':'); var m=(+t[0])*60+(+t[1])+30; return pad(Math.min(23,Math.floor(m/60)))+':'+pad(m%60); }
+function planArea(){ return planDate()===D.today?D.todayArea:((P.data&&P.data.area)||''); }
+function slotSheet(){
+  var tabs='<div class="two"><button class="btn'+(P.tab==='list'?' pri':'')+'" data-act="sltab" data-v="list">📋 लिस्ट से चुनें</button><button class="btn'+(P.tab==='new'?' pri':'')+'" data-act="sltab" data-v="new">➕ नया डॉक्टर</button></div>';
+  var head='<h3>➕ '+esc(planDate()===D.today?'आज':fdate(planDate()))+' के प्लान में जोड़ें</h3>'+tabs+'<div class="field"><label for="slotT">⏰ कितने बजे मिलेंगे?</label><input class="in" type="time" id="slotT" value="'+esc((P.nf&&P.nf.time)||nextSlotTime())+'"></div>';
+  if(P.tab==='new'){ var f=P.nf||(P.nf={type:'Doctor',name:'',phone:'',area:planArea(),address:''});
+    return sheet(head+'<div class="types">'+['Doctor','Chemist','Stockist'].map(function(t){ return '<button class="type" data-act="sltype" data-t="'+t+'" aria-pressed="'+(f.type===t)+'"><span class="em">'+TYPE[t].em+'</span>'+TYPE[t].hi+'</button>'; }).join('')+'</div>'
+      +'<div class="field"><label for="nf_name">'+(f.type==='Doctor'?'डॉक्टर का नाम':'दुकान / फर्म का नाम')+' *</label><input class="in" id="nf_name" value="'+esc(f.name)+'" autocomplete="off"></div>'
+      +'<div class="field"><label for="nf_phone">📞 Mobile</label><input class="in" id="nf_phone" type="tel" inputmode="numeric" value="'+esc(f.phone)+'" placeholder="10 digit"></div>'
+      +'<div class="field"><label for="nf_area">📍 Area *</label><input class="in" id="nf_area" list="nfAreas" value="'+esc(f.area)+'" autocomplete="off"><datalist id="nfAreas">'+D.areas.map(function(a){ return '<option value="'+esc(a)+'"></option>'; }).join('')+'</datalist></div>'
+      +'<div class="field"><label for="nf_addr">🏠 Address</label><textarea class="in" id="nf_addr" style="min-height:60px">'+esc(f.address)+'</textarea></div>'
+      +'<div id="nfDup"></div><button class="btn pri" data-act="slnew">✅ जोड़ें और प्लान में डालें</button><button class="btn" data-act="close-sheet">बंद करें</button>'); }
+  var used=((P.data&&P.data.slots)||[]).map(function(s){ return s.partyId; }); var pa=planArea();
+  if(P.af===undefined) P.af=pa||'';
+  var free=D.parties.filter(function(p){ return used.indexOf(p.id)<0; });
+  var cnt={}; free.forEach(function(p){ cnt[p.area||'']=(cnt[p.area||'']||0)+1; });
+  var areas=Object.keys(cnt).sort(function(a,b){ return (b===pa)-(a===pa) || a.localeCompare(b); });
+  var chips='<div class="chips" style="flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px">'+[''].concat(areas).map(function(a){ return '<button class="chip" style="white-space:nowrap" data-act="slarea" data-v="'+esc(a)+'" aria-pressed="'+(P.af===a)+'">'+(a?'📍 '+esc(a)+' ('+cnt[a]+')'+(a===pa?' ⭐':''):'सब एरिया')+'</button>'; }).join('')+'</div>';
+  var show=areas.filter(function(a){ return !P.af || a===P.af; });
+  var due=function(p){ return p.nextDate&&p.nextDate<=planDate()?'<span class="pill late">🔔 फॉलो-अप '+esc(fdate(p.nextDate))+'</span>':p.due?'<span class="pill due">visit due</span>':p.lastVisit?'<span class="pill cat">last '+esc(fdate(p.lastVisit))+'</span>':'<span class="pill cat">🆕 कभी नहीं मिले</span>'; };
+  var body=show.map(function(a){ var ps=free.filter(function(p){ return (p.area||'')===a; }).sort(function(x,y){ return ((y.nextDate&&y.nextDate<=planDate())-(x.nextDate&&x.nextDate<=planDate())) || ((y.due?1:0)-(x.due?1:0)) || (x.type==='Doctor'?-1:1)-(y.type==='Doctor'?-1:1) || x.name.localeCompare(y.name); });
+    return '<div data-grp style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px"><b style="color:var(--navy)">📍 '+esc(a||'बिना एरिया')+((D.areaCity||{})[a]?' <small class="muted">· '+esc(D.areaCity[a])+'</small>':'')+'</b>'
+      +(a?'<button class="btn sm pri" data-act="slall" data-v="'+esc(a)+'">✅ पूरा एरिया जोड़ें ('+ps.length+')</button>':'')+'</div>'
+      +'<div class="big-choice">'+ps.map(function(p){ return '<button data-act="slotpick" data-id="'+esc(p.id)+'" data-name="'+esc((p.name+' '+p.area+' '+(p.city||'')+' '+(p.phone||'')).toLowerCase())+'"><span class="em">'+TYPE[p.type].em+'</span><span style="min-width:0">'+esc(drName(p))+'<br><small class="muted" style="font-weight:500">'+esc([p.speciality||p.clinic,p.phone].filter(Boolean).join(' · '))+'</small><br>'+due(p)+'</span></button>'; }).join('')+'</div></div>'; }).join('');
+  sheet(head+chips+'<input class="in" id="slotQ" type="search" placeholder="🔍 नाम, एरिया या फोन खोजें" autocomplete="off"><div class="lbl">नाम दबाएं, या पूरा एरिया एक साथ जोड़ें 👇</div>'
+    +'<div id="slotList" style="display:flex;flex-direction:column;gap:10px">'+(body||'<p class="muted">इस एरिया में सब प्लान में हैं</p>')+'</div>'
+    +'<button class="btn" data-act="sltab" data-v="new">➕ लिस्ट में नहीं है? नया डॉक्टर जोड़ें</button><button class="btn" data-act="close-sheet">बंद करें</button>');
+}
+function keepNf(){ if(!P.nf) return; var g=function(i){ var e=$('#'+i); return e?e.value:null; }; var v;
+  if((v=g('nf_name'))!==null) P.nf.name=v; if((v=g('nf_phone'))!==null) P.nf.phone=v; if((v=g('nf_area'))!==null) P.nf.area=v; if((v=g('nf_addr'))!==null) P.nf.address=v; if((v=g('slotT'))!==null) P.nf.time=v; }
+function slotEditSheet(s){
+  sheet('<h3>✏️ '+esc(s.party)+'</h3><div class="two"><div class="field"><label for="seT">⏰ टाइम</label><input class="in" type="time" id="seT" value="'+esc(s.time)+'"></div><div class="field"><label for="seD">📅 तारीख</label><input class="in" type="date" id="seD" min="'+D.today+'" value="'+esc(planDate())+'"></div></div>'
+    +'<button class="btn pri" data-act="slotsave" data-id="'+esc(s.id)+'">💾 सेव करें</button><button class="btn red" data-act="slotdel" data-id="'+esc(s.id)+'">🗑️ प्लान से हटाएं</button><button class="btn" data-act="close-sheet">बंद करें</button>');
+}
+function autoSheet(){
+  var pa=planArea();
+  sheet('<h3>⚡ अपने आप प्लान बनाएं</h3><p class="muted" style="margin:0">चुने गए एरिया के follow-up और due वाले डॉक्टर/केमिस्ट टाइम के साथ जुड़ जाएंगे।</p>'
+    +'<div class="field"><label for="apArea">📍 एरिया</label><input class="in" id="apArea" list="apAreas" value="'+esc(pa)+'" autocomplete="off"><datalist id="apAreas">'+D.areas.map(function(a){ return '<option value="'+esc(a)+'"></option>'; }).join('')+'</datalist></div>'
+    +'<div class="two"><div class="field"><label for="apStart">⏰ शुरू कितने बजे</label><input class="in" type="time" id="apStart" value="'+((P.data&&P.data.slots.length)?nextSlotTime():'10:00')+'"></div><div class="field"><label for="apGap">⏱️ हर मुलाकात</label><select class="in" id="apGap"><option value="20">20 मिनट</option><option value="30" selected>30 मिनट</option><option value="45">45 मिनट</option><option value="60">1 घंटा</option></select></div></div>'
+    +'<button class="btn pri" data-act="autoplan-go">⚡ प्लान बनाएं</button><button class="btn" data-act="close-sheet">बंद करें</button>');
+}
+
+// ---------- bulk upload: doctor / chemist list from Excel or CSV ----------
+var I = {rows:null, file:'', mr:'', area:'', city:'', bad:0};
+var IMP_COLS = {name:['name','naam','नाम','doctorname','drname','doctor','partyname','firmname','shopname','chemistname'], phone:['phone','mobile','mobileno','phoneno','contact','contactno','number','mobilenumber','whatsapp','मोबाइल','फोन','नंबर'],
+  area:['area','एरिया','locality','location','क्षेत्र','इलाका'], city:['city','शहर','town','district','जिला'], address:['address','पता','addr','fulladdress'], type:['type','partytype','प्रकार','kind'],
+  speciality:['speciality','specialty','spec','specialisation','specialization','qualification','degree'], clinic:['clinic','hospital','clinicname','hospitalname','contactperson','owner'], category:['category','class','grade','cat','श्रेणी']};
+function normH(h){ return String(h||'').toLowerCase().replace(/[^a-zऀ-ॿ]/g,''); }
+function parseCSV(t){ var rows=[], row=[], f='', q=false; t=t.replace(/^﻿/,'');
+  for(var i=0;i<t.length;i++){ var c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true; else if(c===','||c===';'||c==='\t'){ row.push(f); f=''; } else if(c==='\n'||c==='\r'){ if(c==='\r'&&t[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=''; } else f+=c; }
+  if(f!==''||row.length){ row.push(f); rows.push(row); } return rows.filter(function(r){ return r.some(function(x){ return String(x).trim(); }); }); }
+function mapRows(grid){
+  var hi=-1, map={};
+  for(var r=0;r<Math.min(6,grid.length);r++){ var m={}; grid[r].forEach(function(h,j){ var n=normH(h); Object.keys(IMP_COLS).forEach(function(k){ if(m[k]===undefined && IMP_COLS[k].indexOf(n)>=0) m[k]=j; }); }); if(m.name!==undefined){ hi=r; map=m; break; } }
+  if(hi<0) throw new Error('"Name" ya "नाम" wala column nahi mila. Pehli line mein column ke naam hone chahiye: Name, Phone, Area…');
+  return grid.slice(hi+1).map(function(r){ var o={}; Object.keys(map).forEach(function(k){ o[k]=String(r[map[k]]==null?'':r[map[k]]).trim(); }); if(o.phone) o.phone=o.phone.replace(/\.0$/,''); return o; }).filter(function(o){ return o.name; });
+}
+function loadXLSX(){ return new Promise(function(res, rej){ if(window.XLSX) return res(window.XLSX); var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=function(){ res(window.XLSX); }; s.onerror=function(){ rej(new Error('Excel padhne ka tool load nahi hua. Internet check karein ya CSV file use karein.')); }; document.head.appendChild(s); }); }
+function readImport(file){
+  var nm=file.name||''; busy(true);
+  var done=function(grid){ busy(false); try{ I.rows=mapRows(grid); I.file=nm; render(); }catch(e){ fail(e); } };
+  if(/\.(xlsx|xls)$/i.test(nm)){ var r=new FileReader(); r.onload=function(){ loadXLSX().then(function(X){ var wb=X.read(new Uint8Array(r.result),{type:'array'}); var ws=wb.Sheets[wb.SheetNames[0]]; done(X.utils.sheet_to_json(ws,{header:1,raw:false,defval:''})); }).catch(fail); }; r.readAsArrayBuffer(file); return; }
+  if(/\.(csv|txt)$/i.test(nm)){ var r2=new FileReader(); r2.onload=function(){ done(parseCSV(String(r2.result))); }; r2.readAsText(file); return; }
+  busy(false); toast('Excel (.xlsx) ya CSV file chuniye. PDF/photo list ko doctor ke page pe 📎 mein save karein.');
+}
+var IMP_SAMPLE='Name,Type,Speciality,Clinic,Phone,Area,City,Address,Category\nDr. Ramesh Sharma,Doctor,Onco,Sharma Clinic,9876543210,Malviya Nagar,Jaipur,12 Main Road,A\nJain Medical Store,Chemist,,Mahesh Jain,9876500000,Malviya Nagar,Jaipur,Shop 4 Market,\n';
+function sImport(){
+  var h=top('📥 लिस्ट अपलोड करें','Upload doctor / chemist list',true)+'<div class="stack">';
+  h+='<div class="hint">📥 <b>Excel (.xlsx) या CSV</b> फाइल से सारे डॉक्टर / केमिस्ट एक साथ जोड़ें।<br>पहली लाइन में कॉलम के नाम हों: <b>Name, Phone, Area</b> (ज़रूरी) और City, Address, Type, Speciality, Clinic, Category (optional)।<br><small class="muted">Jo pehle se list mein hain (same naam + area ya same mobile), woh dobara nahi judenge.</small></div>';
+  h+='<a class="btn full" download="doctor-list-namuna.csv" href="data:text/csv;charset=utf-8,'+encodeURIComponent('﻿'+IMP_SAMPLE)+'">📄 नमूना फाइल (sample) डाउनलोड करें</a>';
+  h+='<label class="btn pri full" style="cursor:pointer;min-height:56px">📂 फाइल चुनें / Choose file<input type="file" id="impIn" accept=".xlsx,.xls,.csv,text/csv" hidden></label>';
+  h+='<p class="muted" style="margin:0;font-size:.82rem">📄 PDF या 🖼️ फोटो वाली लिस्ट से नाम अपने आप नहीं पढ़े जा सकते। उसे Excel में बदलें, या डॉक्टर के पेज पर 📎 में फाइल की तरह save करें।</p>';
+  if(I.rows){
+    var noArea=I.rows.filter(function(r){ return !r.area; }).length;
+    h+='<div class="card"><h3>✅ '+esc(I.file)+' — '+I.rows.length+' नाम मिले</h3>'
+      +(noArea?'<div class="field" style="margin-bottom:10px"><label for="impArea">⚠️ '+noArea+' का एरिया खाली है — इनका एरिया:</label><input class="in" id="impArea" list="impAreas" value="'+esc(I.area)+'" placeholder="Area ka naam"><datalist id="impAreas">'+D.areas.map(function(a){ return '<option value="'+esc(a)+'"></option>'; }).join('')+'</datalist></div>':'')
+      +(D.user.role==='Manager'&&M.data?'<div class="field" style="margin-bottom:10px"><label for="impMr">🧑‍💼 किस MR की लिस्ट में?</label><select class="in" id="impMr">'+M.data.mrs.filter(function(m){ return m.active; }).map(function(m){ return '<option value="'+esc(m.id)+'"'+(I.mr===m.id?' selected':'')+'>'+esc(m.name)+'</option>'; }).join('')+'</select></div>':'')
+      +'<div style="overflow-x:auto"><table><thead><tr><th>नाम</th><th>Phone</th><th>Area</th></tr></thead><tbody>'+I.rows.slice(0,8).map(function(r){ return '<tr><td>'+esc(r.name)+(r.type?'<br><small class="muted">'+esc(r.type)+'</small>':'')+'</td><td>'+esc(r.phone||'–')+'</td><td>'+esc(r.area||'⚠️ खाली')+'</td></tr>'; }).join('')+'</tbody></table></div>'
+      +(I.rows.length>8?'<p class="muted" style="margin:6px 0 0">…aur '+(I.rows.length-8)+' naam</p>':'')+'</div>';
+    h+='<button class="btn pri full" data-act="impgo" style="min-height:58px;font-size:1.05rem">✅ '+I.rows.length+' नाम लिस्ट में जोड़ें</button>';
+  }
+  return h+'</div>';
+}
+
+// ---------- catalogue / brochure + rate card ----------
+function rs(v){ return v?'₹'+v:'–'; }
+function rateLines(type){ return (D.rateCard||[]).filter(function(r){ return r.mrp||r.ptr||r.pts; }).map(function(r){
+  var parts=['MRP '+rs(r.mrp)]; if(type!=='Doctor'&&type!=='Stockist'&&r.ptr) parts.push('PTR '+rs(r.ptr)); if((type==='Stockist'||!type)&&r.pts) parts.push('PTS '+rs(r.pts)); if(!type&&r.ptr&&parts.length<3) parts.splice(1,0,'PTR '+rs(r.ptr));
+  return '• '+r.product+(r.pack?' ('+r.pack+')':'')+' – '+parts.join(' | '); }).join('\n'); }
+var LIBUP = {title:'', product:''};
+function sLibrary(){
+  var mgr=D.user.role==='Manager', lib=D.library||[], rc=D.rateCard||[];
+  var h=top('📚 कैटलॉग और रेट कार्ड','Catalogue · Brochure · Rate card',true)+'<div class="stack">';
+  if(mgr) h+='<div class="card stack" style="padding-top:14px;border:2px solid var(--pri)"><h3 style="margin:0">⬆️ कैटलॉग / ब्रोशर अपलोड करें</h3><div class="field"><label for="lb_title">नाम / Title</label><input class="in" id="lb_title" value="'+esc(LIBUP.title)+'" placeholder="Jaise: Product Catalogue 2026"></div>'
+    +'<div class="field"><label for="lb_prod">Product (optional)</label><select class="in" id="lb_prod"><option value="">सभी प्रोडक्ट / General</option>'+D.products.map(function(p){ return '<option'+(LIBUP.product===p?' selected':'')+'>'+esc(p)+'</option>'; }).join('')+'</select></div>'
+    +'<label class="btn pri full" style="cursor:pointer">📄 PDF / 🖼️ JPG चुनें और अपलोड करें<input type="file" id="libIn" accept="image/*,application/pdf" hidden></label></div>';
+  h+='<div class="card"><h3>📚 कैटलॉग / ब्रोशर ('+lib.length+')</h3>'+(lib.length?'<div class="vlist">'+lib.map(function(f){ var m=msg('brochure',{name:'',type:''},{title:f.title,link:f.link});
+      return '<div class="v"><span style="font-size:1.5rem">'+(f.type==='PDF'?'📄':'🖼️')+'</span><div class="g"><a href="'+esc(f.link)+'" target="_blank" rel="noopener"><b>'+esc(f.title)+'</b></a><br><span class="muted">'+esc((f.product||'General')+' · '+fdate(f.date))+'</span></div><a class="btn sm" href="'+esc(f.link)+'" target="_blank" rel="noopener">खोलें</a><a class="btn sm wa" href="'+esc(waUrl('',m))+'" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>'+(mgr?'<button class="btn sm" data-act="libdel" data-id="'+esc(f.id)+'" aria-label="Delete">🗑️</button>':'')+'</div>'; }).join('')+'</div>'
+    :'<p class="muted" style="margin:0">'+(mgr?'Upar se PDF ya photo upload karein. Sab MR ko yahan dikhega aur woh doctor ko WhatsApp kar sakenge.':'Abhi koi catalogue nahi. Manager upload karenge to yahan dikhega.')+'</p>')+'</div>';
+  var hasRate=rc.some(function(r){ return r.mrp||r.ptr||r.pts; });
+  h+='<div class="card"><h3>💰 रेट कार्ड / Rate card</h3>'+(hasRate?'<div style="overflow-x:auto"><table><thead><tr><th>Product</th><th style="text-align:right">MRP</th><th style="text-align:right">PTR<br><small>केमिस्ट</small></th><th style="text-align:right">PTS<br><small>स्टॉकिस्ट</small></th></tr></thead><tbody>'
+      +rc.map(function(r){ return '<tr><td>'+esc(r.product)+(r.pack?'<br><small class="muted">'+esc(r.pack)+'</small>':'')+'</td><td class="n">'+esc(rs(r.mrp))+'</td><td class="n">'+esc(rs(r.ptr))+'</td><td class="n">'+esc(rs(r.pts))+'</td></tr>'; }).join('')+'</tbody></table></div>'
+      +'<a class="btn wa full" style="margin-top:10px" target="_blank" rel="noopener" href="'+esc(waUrl('',msg('rate',{name:'',type:''},{})))+'">💬 रेट कार्ड WhatsApp पर भेजें</a>'
+    :'<p class="muted" style="margin:0">'+(mgr?'Manager > 💊 प्रोडक्ट tab mein har product ka MRP / PTR / PTS bhariye.':'Abhi rate nahi bhare gaye. Manager bharenge to yahan dikhenge.')+'</p>')
+    +(mgr&&hasRate?'<p class="muted" style="margin:8px 0 0;font-size:.82rem">Rate badalne ke liye: Manager > 💊 प्रोडक्ट</p>':'')+'</div>';
+  h+=langChips();
+  return h+'</div>';
+}
+
+// ---------- monthly summary ----------
+var SM = {month:'', mr:'', data:null};
+function smText(d){
+  var L=[]; L.push('*Monthly Summary – '+monthName(d.month).replace(/^\S+/, function(x){ return ['January','February','March','April','May','June','July','August','September','October','November','December'][MONTHS.indexOf(x)]; })+'*'); if(d.company) L.push(d.company);
+  d.mrs.forEach(function(m){ L.push(''); L.push('*'+m.name+'*');
+    L.push('Working days: '+m.daysWorked+(m.avgStart?' (avg '+m.avgStart+(m.avgEnd?' – '+m.avgEnd:'')+')':''));
+    L.push('Visits: '+m.visits+' (Doctor '+m.byType.Doctor+', Chemist '+m.byType.Chemist+', Stockist '+m.byType.Stockist+')'+(m.notMet?', not met '+m.notMet:''));
+    L.push('Doctors covered: '+m.uniqueDoctors+' / '+m.totalDoctors);
+    if(m.planned) L.push('Plan followed: '+m.planDone+' / '+m.planned+' ('+Math.round(100*m.planDone/m.planned)+'%)');
+    L.push('Calls: '+m.calls+' (connected '+m.connected+')');
+    L.push('Samples: '+m.samplesTotal+(m.samplesTotal?' ('+Object.keys(m.samples).map(function(k){ return k+' '+m.samples[k]; }).join(', ')+')':''));
+    L.push('Orders: '+m.orderCount+(m.orderValue?' | Value Rs '+m.orderValue:'')+(Object.keys(m.orders).length?' ('+Object.keys(m.orders).map(function(k){ return k+' '+m.orders[k]; }).join(', ')+')':''));
+    if(m.discounts.length) L.push('Discount / scheme: '+m.discounts.map(function(x){ return x.party+' '+[x.discount?x.discount+'%':'',x.scheme].filter(Boolean).join(' + '); }).join(', '));
+    L.push('RCPA: '+m.rcpa+' | New doctors/chemists added: '+m.newParties); });
+  return L.join('\n');
+}
+function sSummary(){
+  if(!SM.month) SM.month=D.today.slice(0,7);
+  var mgr=D.user.role==='Manager';
+  var h=top('📊 महीने की रिपोर्ट','Monthly summary · '+monthName(SM.month),true)+'<div class="stack">';
+  h+='<div class="chips">'+[0,-1,-2].map(function(n){ var m=monthAdd(D.today.slice(0,7),n); return '<button class="chip" data-act="smmonth" data-v="'+m+'" aria-pressed="'+(SM.month===m)+'">'+esc(monthName(m))+'</button>'; }).join('')+'</div>';
+  if(mgr && M.data) h+='<div class="field"><label for="sm_mr">🧑‍💼 MR</label><select class="in" id="sm_mr"><option value="">पूरी टीम / Whole team</option>'+M.data.mrs.filter(function(m){ return m.active; }).map(function(m){ return '<option value="'+esc(m.id)+'"'+(SM.mr===m.id?' selected':'')+'>'+esc(m.name)+'</option>'; }).join('')+'</select></div>';
+  var d=SM.data; if(!d||d.month!==SM.month) return h+'<div class="card"><p class="muted">Loading…</p></div></div>';
+  if(d.mrs.length>1){ var t=function(f){ return d.mrs.reduce(function(s,m){ return s+f(m); },0); };
+    h+='<div class="card" style="background:var(--ink);color:#fff;border-color:var(--ink)"><h3>👥 पूरी टीम · '+d.mrs.length+' लोग</h3><div class="nums"><div style="background:#ffffff1a"><b>'+t(function(m){ return m.visits; })+'</b><span style="color:#fffc">Visits</span></div><div style="background:#ffffff1a"><b>'+t(function(m){ return m.calls; })+'</b><span style="color:#fffc">Calls</span></div><div style="background:#ffffff1a"><b>₹'+Math.round(t(function(m){ return m.orderValue; }))+'</b><span style="color:#fffc">Orders</span></div></div></div>'; }
+  d.mrs.forEach(function(m){ var cv=m.coverage;
+    h+='<div class="mr"><div class="mr-h"><b>'+esc(m.name)+'</b><span class="pill cat">'+m.daysWorked+' दिन काम</span></div>'
+      +'<div class="nums"><div><b>'+m.visits+'</b><span>✅ Visits</span></div><div><b>'+m.calls+'</b><span>📞 Calls</span></div><div><b>'+m.samplesTotal+'</b><span>🎁 Samples</span></div></div>'
+      +'<div class="nums"><div><b>'+m.orderCount+'</b><span>🧾 Orders</span></div><div><b>'+(m.orderValue?'₹'+Math.round(m.orderValue):'–')+'</b><span>💰 Value</span></div><div><b>'+m.uniqueDoctors+'/'+m.totalDoctors+'</b><span>🩺 Doctors</span></div></div>'
+      +'<dl class="facts" style="font-size:.9rem"><dt>⏱ औसत समय</dt><dd>'+esc(m.avgStart?m.avgStart+(m.avgEnd?' – '+m.avgEnd:''):'–')+'</dd><dt>✅ विज़िट</dt><dd>🩺 '+m.byType.Doctor+' · 💊 '+m.byType.Chemist+' · 📦 '+m.byType.Stockist+(m.notMet?' · ❌ '+m.notMet+' नहीं मिले':'')+'</dd>'
+      +'<dt>🗓️ प्लान</dt><dd>'+(m.planned?m.planDone+' / '+m.planned+' ('+Math.round(100*m.planDone/m.planned)+'%)':'–')+'</dd><dt>🎯 कवरेज</dt><dd>A '+cv.A[0]+'/'+cv.A[1]+' · B '+cv.B[0]+'/'+cv.B[1]+' · C '+cv.C[0]+'/'+cv.C[1]+'</dd>'
+      +'<dt>📞 कॉल</dt><dd>'+m.calls+' ('+m.connected+' बात हुई)</dd><dt>📋 RCPA</dt><dd>'+m.rcpa+'</dd><dt>🆕 नए जोड़े</dt><dd>'+m.newParties+'</dd></dl>'
+      +(m.samplesTotal?'<div class="lbl">🎁 सैंपल</div><div class="muted" style="font-size:.88rem">'+esc(Object.keys(m.samples).map(function(k){ return k+': '+m.samples[k]; }).join(' · '))+'</div>':'')
+      +(Object.keys(m.orders).length?'<div class="lbl">🧾 ऑर्डर (पीस)</div><div class="muted" style="font-size:.88rem">'+esc(Object.keys(m.orders).map(function(k){ return k+': '+m.orders[k]; }).join(' · '))+'</div>':'')
+      +(m.discounts.length?'<div class="lbl">🏷️ डिस्काउंट / स्कीम दिए</div><div class="vlist">'+m.discounts.map(function(x){ return '<div class="v"><span class="t" style="width:52px">'+esc(fdate(x.date))+'</span><div class="g"><b>'+(TYPE[x.type]?TYPE[x.type].em:'')+' '+esc(x.party)+'</b><br>'+esc([x.discount?x.discount+'% off':'',x.scheme].filter(Boolean).join(' + '))+(x.value?' · ₹'+esc(x.value):'')+'</div></div>'; }).join('')+'</div>':'')
+      +'</div>'; });
+  var txt=smText(d);
+  h+='<a class="btn wa full" style="min-height:56px" target="_blank" rel="noopener" href="'+esc(waUrl(mgr?'':D.managerPhone, txt))+'">💬 '+(mgr?'WhatsApp पर भेजें':'Manager को WhatsApp करें')+'</a><button class="btn full" data-act="copy" data-text="'+esc(txt)+'">📋 Copy</button>';
+  return h+'</div>';
+}
+function loadSummary(){ var m=SM.month; return run('monthlySummary', m, SM.mr||'').then(function(d){ if(SM.month===m){ SM.data=d; if(cur().s==='summary') render(); } }); }
+
+// ---------- monthly tour plan ----------
+function monthAdd(ym, n){ var y=+ym.slice(0,4), m=+ym.slice(5,7)-1+n; y+=Math.floor(m/12); m=((m%12)+12)%12; return y+'-'+pad(m+1); }
+function sTour(){
+  if(!T.month) T.month=D.today.slice(0,7);
+  var h=top('📅 टूर प्लान / Tour plan', monthName(T.month), true)+'<div class="stack">';
+  h+='<div class="chips">'+[0,1].map(function(n){ var m=monthAdd(D.today.slice(0,7),n); return '<button class="chip" data-act="tmonth" data-v="'+m+'" aria-pressed="'+(T.month===m)+'">'+(n?'अगला महीना · ':'यह महीना · ')+monthName(m)+'</button>'; }).join('')+'</div>';
+  h+='<div class="hint">📅 हर दिन का <b>एरिया</b> लिखें, फिर <b>👥 डॉक्टर</b> दबाकर उस दिन किस डॉक्टर / केमिस्ट से कितने बजे मिलना है, जोड़ें (नया नाम, फोन, पता भी)।<br>♻️ <b>पिछले महीने से कॉपी</b> दबाएं — हर सोमवार, मंगलवार… का प्लान अपने आप आ जाएगा।</div>';
+  if(!T.rows) return h+'<div class="card"><p class="muted">Loading…</p></div></div>';
+  var by={}; T.rows.forEach(function(r){ by[r.date]=r; });
+  var withArea=T.rows.filter(function(r){ return r.area; });
+  var st=withArea.length?(withArea.every(function(r){ return r.status==='Approved'; })?'<span class="pill done">✅ Manager ne approve kiya</span>':'<span class="pill due">⏳ Approval baaki</span>'):'<span class="pill cat">अभी नहीं बना</span>';
+  var totalDocs=T.rows.reduce(function(s,r){ return s+r.slots.length; },0);
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'+st+'<span class="pill cat">📍 '+withArea.length+' दिन · 👥 '+totalDocs+' मुलाकातें</span></div>';
+  h+='<button class="btn full" data-act="tcopy">♻️ पिछले महीने ('+esc(monthName(monthAdd(T.month,-1)))+') से कॉपी करें</button>';
+  h+='<div class="card" style="padding:6px 14px"><datalist id="tourAreas">'+D.areas.map(function(a){ return '<option value="'+esc(a)+'"></option>'; }).join('')+'</datalist>';
+  var y=+T.month.slice(0,4), mo=+T.month.slice(5,7), n=new Date(y,mo,0).getDate();
+  for(var d=1; d<=n; d++){ var ds=T.month+'-'+pad(d); var wd=new Date(ds+'T12:00:00').getDay(); var r=by[ds]||{slots:[]}; var past=ds<D.today;
+    h+='<div class="trow'+(wd===0?' sun':'')+'" style="flex-wrap:wrap'+(past?';opacity:.55':'')+'"><span class="d"><b>'+d+'</b> '+WEEK[wd]+(ds===D.today?' <span class="pill done">आज</span>':'')+'</span><input class="in tin" style="flex:1;min-width:0" data-d="'+ds+'" list="tourAreas" value="'+esc(r.area||'')+'" placeholder="'+(wd===0?'छुट्टी':'एरिया')+'" autocomplete="off">'
+      +(past?'<span class="btn sm" style="visibility:hidden">👥</span>':'<button class="btn sm'+(r.slots.length?' pri':'')+'" data-act="tday" data-d="'+ds+'" aria-label="Doctors">👥 '+(r.slots.length||'+')+'</button>')
+      +(r.status==='Approved'?'<span title="Approved">✅</span>':r.area?'<span title="Pending">⏳</span>':'')
+      +(r.slots.length?'<div class="muted" style="flex-basis:100%;font-size:.8rem;padding-left:86px">'+esc(r.slots.slice(0,3).map(function(x){ return x.time+' '+x.party; }).join(' · ')+(r.slots.length>3?' +'+(r.slots.length-3)+' और':''))+'</div>':'')+'</div>'; }
+  h+='</div><button class="btn pri full" data-act="tsave" style="min-height:56px">💾 सेव करें / Save tour plan</button>';
+  return h+'</div>';
+}
+function tourEntries(){ var ent=[]; document.querySelectorAll('.tin').forEach(function(e){ ent.push({date:e.dataset.d, area:e.value.trim()}); }); return ent; }
+
+// ---------- my sample stock ----------
+function sStock(){
+  var s=D.stock||[];
+  var h=top('🎒 मेरा सैंपल स्टॉक','My samples',true)+'<div class="stack">';
+  h+='<div class="hint">🎒 मैनेजर से <b>मिले</b> सैंपल − डॉक्टरों को <b>दिए</b> = आपके पास <b>बचे</b>। 5 या कम बचें तो लाल दिखेगा।</div>';
+  if(!s.length) return h+'<div class="card empty"><span class="em">🎒</span><p>अभी कोई स्टॉक दर्ज नहीं। मैनेजर ऐप में सैंपल देंगे तो यहाँ दिखेगा।</p></div></div>';
+  h+='<div class="card"><table><thead><tr><th>Product</th><th style="text-align:right">मिले</th><th style="text-align:right">दिए</th><th style="text-align:right">बचे</th></tr></thead><tbody>'
+    +s.map(function(x){ return '<tr><td>'+esc(x.product)+'</td><td class="n">'+x.issued+'</td><td class="n">'+x.given+'</td><td class="n" style="color:'+(x.balance<=5?'var(--red)':'var(--pri)')+'">'+x.balance+'</td></tr>'; }).join('')+'</tbody></table></div>';
+  var low=s.filter(function(x){ return x.balance<=5; });
+  if(low.length && digits(D.managerPhone)){ var txt='Namaste Sir / Ma\'am,\n\nMere paas neeche diye gaye samples ka stock kam hai:\n'+low.map(function(x){ return '- '+x.product+': '+x.balance+' bache'; }).join('\n')+'\n\nKripya jald se jald aur samples bhejne ki vyavastha karein.\n\nDhanyavaad,\n'+D.user.name;
+    h+='<a class="btn wa full" target="_blank" rel="noopener" href="'+esc(waUrl(D.managerPhone,txt))+'">💬 मैनेजर से और सैंपल मांगें</a>'; }
+  return h+'</div>';
+}
+
+function sList(mode){
+  mode = mode || 'area'; L.mode = mode;
+  var title = mode==='follow'?'फॉलो-अप / Follow-up':mode==='all'?'सारी लिस्ट / All':'आज की लिस्ट / Today';
+  var list = D.parties.slice();
+  if(mode==='area'){ if(!D.todayArea) return top(title,'',true)+'<div class="stack"><div class="card empty"><span class="em">📍</span><p>Pehle aaj ka area chuniye</p><button class="btn pri" data-act="pick-area">Area chuniye</button></div></div>';
+    list = list.filter(function(p){ return p.area===D.todayArea; }); }
+  if(mode==='follow') list = followups();
+  if(L.type) list = list.filter(function(p){ return p.type===L.type; });
+  var q=L.q.trim().toLowerCase(); if(q) list=list.filter(function(p){ return [p.name,p.clinic,p.area,p.phone,p.speciality].join(' ').toLowerCase().indexOf(q)>=0; });
+  list.sort(function(a,b){ var sa=(a.visitedToday?2:a.due||a.nextDate&&a.nextDate<=D.today?0:1), sb=(b.visitedToday?2:b.due||b.nextDate&&b.nextDate<=D.today?0:1);
+    if(mode==='follow') return (a.nextDate+a.nextTime).localeCompare(b.nextDate+b.nextTime); return sa-sb || a.name.localeCompare(b.name); });
+  var h=top(title, mode==='area'?D.todayArea:'', true)+'<div class="stack">';
+  if(mode!=='follow') h+='<button class="btn pri full" data-act="add" style="min-height:56px;font-size:1.05rem;flex-direction:column;gap:0"><span>➕ '+(mode==='area'&&D.todayArea?esc(D.todayArea)+' में नया जोड़ें':'नया जोड़ें')+'</span><small style="font-weight:500;opacity:.85">Doctor / Chemist / Stockist</small></button>';
+  h+='<input class="search" id="q" type="search" placeholder="🔍 नाम खोजें / Search name" value="'+esc(L.q)+'">';
+  h+='<div class="chips">'+['','Doctor','Chemist','Stockist'].map(function(t){ return '<button class="chip" data-act="ltype" data-type="'+t+'" aria-pressed="'+(L.type===t)+'">'+(t?TYPE[t].em+' '+TYPE[t].hi:'सब / All')+'</button>'; }).join('')+'</div>';
+  if(!list.length) h+='<div class="card empty"><span class="em">'+(mode==='follow'?'🎉':'🗂️')+'</span><p>'+(mode==='follow'?'Koi follow-up baaki nahi':'Yahan abhi koi nahi')+'</p>'+(mode!=='follow'?'<button class="btn pri" data-act="add">➕ नया जोड़ें / Add</button>':'')+'</div>';
+  list.forEach(function(p){ h+=partyCard(p); });
+  return h+'</div>';
+}
+function statusPill(p){
+  if(p.visitedToday) return '<span class="pill done">✅ Aaj mil liye</span>';
+  if(p.notMetToday) return '<span class="pill late">❌ Aaj nahi mile</span>';
+  if(p.nextDate && p.nextDate<D.today) return '<span class="pill late">⏰ '+esc(niceDay(p.nextDate))+'</span>';
+  if(p.nextDate && p.nextDate===D.today) return '<span class="pill due">🔔 Aaj '+esc(p.nextTime||'')+'</span>';
+  if(p.due) return '<span class="pill due">Visit due</span>';
+  return p.lastVisit?'<span class="pill cat">'+esc(niceDay(p.lastVisit))+'</span>':'';
+}
+function partyCard(p){
+  var tel = digits(p.phone);
+  return '<div class="party"><div class="main" data-act="party" data-id="'+esc(p.id)+'"><div class="pic '+esc(p.type)+'">'+TYPE[p.type].em+'</div><div class="info"><div class="name">'+esc(p.type==='Doctor'&&!/^dr/i.test(p.name)?'Dr. '+p.name:p.name)+'</div><div class="sub">'+esc([p.speciality,p.clinic,p.area].filter(Boolean).join(' · '))+'</div><div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap">'+statusPill(p)+(p.created?(isNew(p)?'<span class="pill due">🆕 नया · '+esc(fdate(p.created))+'</span>':'<span class="pill cat">पुराना · जोड़ा '+esc(fdate(p.created))+'</span>'):'')+(p.type==='Doctor'&&p.category?'<span class="pill cat">'+esc(p.category)+'</span>':'')+'</div></div></div>'
+   +'<div class="acts"><button data-act="visit" data-id="'+esc(p.id)+'"><span class="em">✅</span>विज़िट</button>'
+   +(tel?'<button data-act="callpick" data-id="'+esc(p.id)+'"><span class="em">📞</span>कॉल</button>':'<button disabled style="opacity:.35"><span class="em">📞</span>कॉल</button>')
+   +(tel?'<button data-act="wa" data-id="'+esc(p.id)+'"><span class="em">💬</span>WhatsApp</button>':'<button disabled style="opacity:.35"><span class="em">💬</span>WhatsApp</button>')
+   +'<a href="'+esc(mapUrl(p))+'" target="_blank" rel="noopener"><span class="em">📍</span>मैप</a></div></div>';
+}
+
+function party(id){ for(var i=0;i<D.parties.length;i++) if(D.parties[i].id===id) return D.parties[i]; return null; }
+function sParty(id){
+  var p=party(id); if(!p) return top('—','',true)+'<div class="empty">Record nahi mila</div>';
+  var c=cur(); var h=top(TYPE[p.type].hi+' / '+p.type, '', true)+'<div class="stack">'+partyCard(p);
+  h+='<div class="card"><dl class="facts">'
+    +(p.type==='Doctor'?'<dt>Speciality</dt><dd>'+esc(p.speciality||'–')+'</dd><dt>Category</dt><dd>'+esc(p.category||'–')+' <span class="muted">('+({A:'har hafte',B:'15 din',C:'mahina'}[p.category]||'')+')</span></dd>':'')
+    +'<dt>'+(p.type==='Doctor'?'Clinic':'Shop')+'</dt><dd>'+esc(p.clinic||'–')+'</dd><dt>Area</dt><dd>'+esc(p.area||'–')+'</dd><dt>Phone</dt><dd>'+esc(p.phone||'–')+'</dd><dt>Address</dt><dd>'+esc(p.address||'–')+'</dd>'
+    +'<dt>Last visit</dt><dd>'+esc(p.lastVisit?niceDay(p.lastVisit):'Kabhi nahi')+'</dd>'+(p.nextDate?'<dt>Follow-up</dt><dd>'+esc(niceDay(p.nextDate)+' '+(p.nextTime||''))+'</dd>':'')
+    +(p.dob?'<dt>🎂 जन्मदिन</dt><dd>'+esc(fdate('2000-'+p.dob))+'</dd>':'')+(p.anniversary?'<dt>💍 सालगिरह</dt><dd>'+esc(fdate('2000-'+p.anniversary))+'</dd>':'')
+    +(D.user.role==='Manager'&&p.mrName?'<dt>MR</dt><dd>'+esc(p.mrName)+'</dd>':'')+'</dl>'
+    +'<div class="row" style="margin-top:12px"><button class="btn sm" data-act="edit" data-id="'+esc(p.id)+'">✏️ Edit</button>'+((D.dayPlan||[]).some(function(s){ return s.partyId===p.id; })?'':'<button class="btn sm" data-act="slotone" data-id="'+esc(p.id)+'">🗓️ आज के प्लान में</button>')+(p.nextDate?'<a class="btn sm" target="_blank" rel="noopener" href="'+esc(calUrl('Follow-up: '+p.name, p.nextDate, p.nextTime, [p.clinic,p.area,p.phone].filter(Boolean).join(', ')))+'">📅 Calendar</a>':'')+'</div></div>';
+  h+='<div class="card"><h3>📎 फोटो / PDF</h3><p class="muted" style="margin:0 0 10px;font-size:.84rem">Visiting card, prescription, clinic photo, order slip — sab yahan save karein (Google Drive mein jaata hai)</p>'
+    +'<label class="btn pri full" style="cursor:pointer">📷 फोटो / PDF जोड़ें<input type="file" id="fileIn" data-id="'+esc(p.id)+'" accept="image/*,application/pdf" hidden></label>'
+    +(!c.files?'<p class="muted">Loading…</p>':!c.files.length?'<p class="muted" style="margin:10px 0 0">Abhi koi file nahi</p>':'<div class="vlist" style="margin-top:10px">'+c.files.map(function(f){ return '<div class="v"><span style="font-size:1.4rem">'+(f.type==='PDF'?'📄':'🖼️')+'</span><div class="g"><a href="'+esc(f.link)+'" target="_blank" rel="noopener"><b>'+esc(f.name)+'</b></a><br><span class="muted">'+esc(fdate(f.date)+' · '+f.mr)+'</span>'+(f.note?'<br>'+esc(f.note):'')+'</div><a class="btn sm" href="'+esc(f.link)+'" target="_blank" rel="noopener">खोलें</a><button class="btn sm" data-act="fdel" data-id="'+esc(f.id)+'" aria-label="Delete">🗑️</button></div>'; }).join('')+'</div>')+'</div>';
+  h+='<div class="card"><h3>📜 History</h3>'+(!c.hist?'<p class="muted">Loading…</p>':!c.hist.length?'<p class="muted">Abhi koi visit ya call nahi</p>':'<div class="hist">'+c.hist.map(function(x){
+    if(x.kind==='call') return '<div class="h"><div class="when">'+esc(niceDay(x.date)+' '+x.time+' · '+(x.via==='WhatsApp'?'💬':'📞')+' '+x.via+' · '+x.mr)+'</div><p><b>'+esc(x.outcome)+'</b>'+(x.remarks?' — '+esc(x.remarks):'')+'</p></div>';
+    if(x.met===false) return '<div class="h" style="border-color:var(--red)"><div class="when">'+esc(niceDay(x.date)+' '+x.time+' · ❌ नहीं मिले · '+x.mr)+'</div><p><b>'+esc(x.notMetReason||'')+'</b>'+(x.remarks?' — '+esc(x.remarks):'')+'</p>'+(x.nextDate?'<p class="muted">🔔 Next: '+esc(fdate(x.nextDate)+' '+x.nextTime)+'</p>':'')+'</div>';
+    return '<div class="h visit"><div class="when">'+esc(niceDay(x.date)+' '+x.time+' · ✅ Visit · '+x.mr)+'</div>'
+      +(x.products?'<p>💊 '+esc(x.products)+'</p>':'')+(x.interest||x.assessment?'<p>'+esc([x.interest,x.assessment].filter(Boolean).join(' · '))+'</p>':'')
+      +(x.samples?'<p>🎁 '+esc(x.samples)+'</p>':'')+(x.order?'<p>🧾 '+esc(x.order)+'</p>':'')+(x.rcpa?'<p>📋 RCPA: '+esc(x.rcpa)+'</p>':'')+(x.discount||x.scheme||x.orderValue?'<p>🏷️ '+esc([x.discount?x.discount+'% discount':'',x.scheme?'Scheme '+x.scheme:'',x.orderValue?'Order ₹'+x.orderValue:''].filter(Boolean).join(' · '))+'</p>':'')+(x.remarks?'<p>📝 '+esc(x.remarks)+'</p>':'')
+      +(x.nextDate?'<p class="muted">🔔 Next: '+esc(fdate(x.nextDate)+' '+x.nextTime)+'</p>':'')+'</div>'; }).join('')+'</div>')+'</div>';
+  h+='<button class="btn red full" data-act="pdel" data-id="'+esc(p.id)+'">🗑️ ये '+esc(TYPE[p.type].hi)+' लिस्ट से हटाएं</button>';
+  return h+'</div>';
+}
+
+function sVisit(id){
+  var p=party(id); if(!p) return top('—','',true);
+  if(!V || V.partyId!==id) V={partyId:id, met:true, reason:'', products:[], qty:{}, oqty:{}, rcpa:[], interest:'', assessment:'', remarks:'', order:'', nextDate:'', nextTime:'11:00'};
+  var stock={}; (D.stock||[]).forEach(function(s){ stock[s.product]=s.balance; });
+  var h=top('✅ विज़िट / Visit', p.name, true)+'<div class="stack">';
+  h+='<div class="card"><div class="lbl" style="margin-bottom:8px">🤝 क्या मुलाकात हुई? / Did you meet?</div><div class="met2"><button data-act="vmet" data-v="1" aria-pressed="'+V.met+'"><span class="em">✅</span>हाँ, मिले<small class="muted">Met</small></button><button class="no" data-act="vmet" data-v="0" aria-pressed="'+(!V.met)+'"><span class="em">❌</span>नहीं मिले<small class="muted">Not met</small></button></div>';
+  if(!V.met) h+='<div class="lbl" style="margin:14px 0 8px">क्यों नहीं मिले? / Reason</div><div class="chips">'+NOTMET.map(function(r){ return '<button class="chip" data-act="vreason" data-v="'+esc(r[0])+'" aria-pressed="'+(V.reason===r[0])+'">'+r[1]+' '+r[2]+'</button>'; }).join('')+'</div>';
+  h+='</div>';
+  if(V.met){
+    h+='<div class="card"><div class="lbl" style="margin-bottom:8px">💊 कौन से प्रोडक्ट बताए? / Products</div><div class="chips">'+D.products.map(function(pr){ return '<button class="chip" data-act="vprod" data-p="'+esc(pr)+'" aria-pressed="'+(V.products.indexOf(pr)>=0)+'">'+esc(pr)+'</button>'; }).join('')+'<button class="chip" data-act="newprod">➕ नया</button></div></div>';
+    h+='<div class="card"><div class="lbl" style="margin-bottom:8px">'+(p.type==='Doctor'?'👨‍⚕️ डॉक्टर का इंटरेस्ट / Interest':'🙂 इंटरेस्ट / Interest')+'</div><div class="mood">'+MOOD.map(function(m){ return '<button data-act="vmood" data-v="'+m[0]+'" aria-pressed="'+(V.interest===m[0])+'"><span class="em">'+m[1]+'</span>'+m[2]+'<small class="muted">'+m[0]+'</small></button>'; }).join('')+'</div>';
+    if(p.type==='Doctor') h+='<div class="lbl" style="margin:14px 0 8px">📋 Assessment</div><div class="chips">'+ASSESS.map(function(a){ return '<button class="chip" data-act="vassess" data-v="'+esc(a[0])+'" aria-pressed="'+(V.assessment===a[0])+'">'+a[1]+' '+esc(a[0])+'</button>'; }).join('')+'</div>';
+    h+='</div>';
+    h+='<div class="card"><div class="lbl" style="margin-bottom:6px">🎁 सैंपल दिए / Samples given</div>'+(V.products.length?V.products.map(function(pr){ var q=V.qty[pr]||0; var b=stock[pr]; return '<div class="qty"><span>'+esc(pr)+(b!==undefined?'<br><small style="color:'+(q>b?'var(--red)':'var(--muted)')+'">🎒 स्टॉक: '+b+(q>b?' — कम है!':'')+'</small>':'')+'</span><span class="n"><button data-act="q" data-p="'+esc(pr)+'" data-d="-1" aria-label="Kam">−</button><output>'+q+'</output><button data-act="q" data-p="'+esc(pr)+'" data-d="1" aria-label="Zyada">+</button></span></div>'; }).join(''):'<p class="muted" style="margin:0">Upar product chuniye, phir yahan sample ginti daaliye</p>')+'</div>';
+    var rmap={}; (D.rateCard||[]).forEach(function(r){ rmap[r.product]=r; });
+    var rateOf=function(pr){ var r=rmap[pr]||{}; return p.type==='Stockist'?(r.pts||r.ptr):(r.ptr||r.pts); };
+    h+='<div class="card"><div class="lbl" style="margin-bottom:6px">🧾 '+(p.type==='Doctor'?'ऑर्डर (अगर डॉक्टर खुद दवा रखते हैं)':'ऑर्डर मिला? / Order (कितने पीस)')+'</div>'+D.products.map(function(pr){ var rt=rateOf(pr); return '<div class="qty"><span>'+esc(pr)+(rt?'<br><small class="muted">'+(p.type==='Stockist'?'PTS':'PTR')+' ₹'+esc(rt)+'</small>':'')+'</span><input class="in oq" type="number" inputmode="numeric" min="0" data-p="'+esc(pr)+'" value="'+esc(V.oqty[pr]||'')+'" placeholder="0" style="width:96px;text-align:center"></div>'; }).join('')
+      +'<div class="lbl" style="margin:12px 0 6px">🏷️ डिस्काउंट / स्कीम दिया? / Discount</div><div class="chips">'+[0,5,10,15,20].map(function(x){ return '<button class="chip" data-act="vdisc" data-v="'+x+'" aria-pressed="'+((+V.discount||0)===x)+'">'+(x?x+'%':'नहीं')+'</button>'; }).join('')+'</div>'
+      +'<div class="two" style="margin-top:8px"><div class="field"><label for="v_disc" style="font-size:.84rem">या खुद लिखें (%)</label><input class="in" id="v_disc" type="number" inputmode="decimal" min="0" max="100" value="'+esc(V.discount||'')+'" placeholder="0"></div><div class="field"><label for="v_scheme" style="font-size:.84rem">स्कीम / Scheme</label><input class="in" id="v_scheme" value="'+esc(V.scheme||'')+'" placeholder="Jaise 10+1"></div></div>'
+      +'<textarea class="in" id="v_order" style="margin-top:8px;min-height:60px" placeholder="और नोट: stock, payment…">'+esc(V.order)+'</textarea></div>';
+    if(p.type!=='Doctor'){
+      var docs=D.parties.filter(function(x){ return x.type==='Doctor'; });
+      h+='<div class="card"><div class="lbl">📋 RCPA — कौन डॉक्टर हमारी दवा लिख रहे हैं?</div><p class="muted" style="margin:2px 0 10px;font-size:.84rem">केमिस्ट से पूछें: किस डॉक्टर की पर्ची पर हमारा प्रोडक्ट बिका</p><datalist id="docList">'+docs.map(function(x){ return '<option value="'+esc(drName(x))+'"></option>'; }).join('')+'</datalist>'
+        +'<div style="display:flex;flex-direction:column;gap:8px">'+V.rcpa.map(function(r,i){ return '<div class="rc"><input class="in rcd" data-i="'+i+'" list="docList" placeholder="🩺 डॉक्टर का नाम" value="'+esc(r.doctor)+'" autocomplete="off"><div class="r2"><select class="in rcp" data-i="'+i+'">'+D.products.map(function(pr){ return '<option'+(r.product===pr?' selected':'')+'>'+esc(pr)+'</option>'; }).join('')+'</select><input class="in rcq" data-i="'+i+'" type="number" inputmode="numeric" placeholder="Qty" value="'+esc(r.qty||'')+'"><button class="btn sm" data-act="rcdel" data-i="'+i+'" aria-label="Hatayein">✕</button></div></div>'; }).join('')+'</div>'
+        +'<button class="btn sm full" data-act="rcadd" style="margin-top:8px">➕ RCPA जोड़ें</button></div>';
+    }
+  }
+  h+='<div class="card field"><label for="v_rem">📝 '+(V.met?'बात क्या हुई? / Remarks':'नोट / Note')+'</label><textarea class="in" id="v_rem" placeholder="'+(V.met?'Jaise: next week tak prescribe shuru karenge':'Jaise: shaam 6 baje OPD hai')+'">'+esc(V.remarks)+'</textarea></div>';
+  h+='<div class="card"><div class="lbl" style="margin-bottom:8px">🔔 '+(V.met?'अगला फॉलो-अप / Next follow-up':'दोबारा कब जाएंगे? / Try again')+'</div><div class="chips">'
+    +[['Kal',1],['3 din',3],['1 hafta',7],['15 din',15],['Nahi',0]].map(function(o){ var d=o[1]?addDays(D.today,o[1]):''; return '<button class="chip" data-act="vnext" data-d="'+d+'" aria-pressed="'+(V.nextDate===d && (o[1]||V.nextDate===''))+'">'+o[0]+'</button>'; }).join('')+'</div>'
+    +'<div class="two" style="margin-top:10px"><div class="field"><label for="v_nd">Date</label><input class="in" type="date" id="v_nd" value="'+esc(V.nextDate)+'"></div><div class="field"><label for="v_nt">Time</label><input class="in" type="time" id="v_nt" value="'+esc(V.nextTime)+'"></div></div></div>';
+  h+='<button class="btn pri full" data-act="vsave" style="min-height:58px;font-size:1.1rem">'+(V.met?'✅ सेव करें / Save visit':'❌ "नहीं मिले" सेव करें')+'</button><p class="muted" style="text-align:center;margin:0;font-size:.82rem">📍 Save karte waqt aapki location bhi save hogi</p>';
+  return h+'</div>';
+}
+function keepVisitInputs(){ if(!V) return; var r=$('#v_rem'), o=$('#v_order'), nd=$('#v_nd'), nt=$('#v_nt'); if(r) V.remarks=r.value; if(o) V.order=o.value; if(nd) V.nextDate=nd.value; if(nt) V.nextTime=nt.value;
+  var vd=$('#v_disc'), vs=$('#v_scheme'); if(vd) V.discount=vd.value; if(vs) V.scheme=vs.value;
+  document.querySelectorAll('.oq').forEach(function(e){ var n=Math.max(0,Math.round(+e.value||0)); if(n) V.oqty[e.dataset.p]=n; else delete V.oqty[e.dataset.p]; });
+  document.querySelectorAll('.rcd').forEach(function(e){ var r=V.rcpa[+e.dataset.i]; if(r) r.doctor=e.value; });
+  document.querySelectorAll('.rcp').forEach(function(e){ var r=V.rcpa[+e.dataset.i]; if(r) r.product=e.value; });
+  document.querySelectorAll('.rcq').forEach(function(e){ var r=V.rcpa[+e.dataset.i]; if(r) r.qty=e.value; }); }
+
+function nextPlanned(){ return (D.dayPlan||[]).filter(function(s){ return s.status==='pending'||s.status==='late'; })[0]; }
+function sDone(r){
+  var p=party(r.partyId)||{name:r.name}; var mr=D.user.name;
+  var h=top('Save ho gaya','',false)+'<div class="stack">';
+  if(r.met===false){
+    h+='<div class="ok-big"><div class="em">📝</div><h2>"नहीं मिले" दर्ज हो गया</h2><p class="muted">'+esc(p.name)+' · '+esc(r.reason||'')+' · '+esc(r.time)+'</p></div>';
+    if(digits(p.phone)) h+=langChips()+'<a class="btn wa full" target="_blank" rel="noopener" data-act="walog" data-id="'+esc(p.id)+'" href="'+esc(waUrl(p.phone, msg('missed',p,{date:r.nextDate,time:r.nextTime})))+'">💬 WhatsApp: "आया था, फिर आऊँगा"</a>';
+  } else {
+    var thank=msg('thanks',p,{prods:r.products});
+    h+='<div class="ok-big"><div class="em">✅</div><h2>विज़िट सेव हो गई</h2><p class="muted">'+esc(p.name)+' · '+esc(r.time)+(r.located?' · 📍 location saved':' · location nahi mili')+'</p></div>';
+    if(r.orderValue||+r.discount||r.scheme) h+='<div class="card" style="text-align:center">🧾 ऑर्डर'+(r.orderValue?' <b>₹'+esc(r.orderValue)+'</b>':'')+(+r.discount?' · 🏷️ '+esc(r.discount)+'% डिस्काउंट':'')+(r.scheme?' · स्कीम '+esc(r.scheme):'')+'</div>';
+    if(digits(p.phone)) h+=langChips()+'<a class="btn wa full" target="_blank" rel="noopener" data-act="walog" data-id="'+esc(p.id)+'" href="'+esc(waUrl(p.phone, thank))+'">💬 WhatsApp पर धन्यवाद भेजें</a><details><summary class="muted" style="cursor:pointer">मैसेज देखें / Preview</summary><div class="report" style="margin-top:6px">'+esc(thank)+'</div></details>';
+  }
+  if(r.nextDate) h+='<a class="btn full" target="_blank" rel="noopener" href="'+esc(calUrl('Follow-up: '+p.name, r.nextDate, r.nextTime, [p.clinic,p.area,p.phone].filter(Boolean).join(', ')))+'">📅 Google Calendar में रिमाइंडर डालें</a>';
+  var nx=nextPlanned();
+  if(nx) h+='<div class="card"><div class="lbl">⏭️ प्लान में अगला / Next in plan</div><div class="slot '+esc(nx.status)+'" style="margin-top:8px;border-left-width:6px"><span class="tm">'+esc(nx.time)+'</span><div class="g"><b>'+(TYPE[nx.type]?TYPE[nx.type].em:'')+' '+esc(nx.party)+'</b><div class="muted" style="font-size:.82rem">'+esc(nx.area||'')+'</div></div><button class="btn sm pri" data-act="visit" data-id="'+esc(nx.partyId)+'">✅ मिले</button></div></div>';
+  h+='<div class="two"><button class="btn" data-act="plan">🗓️ आज का प्लान</button><button class="btn pri" data-act="home">🏠 होम</button></div></div>';
+  return h;
+}
+
+function sAdd(id){
+  var p=id?party(id):null;
+  if(!A || A.id!==(id||'')) A=p?{id:p.id,type:p.type,name:p.name,speciality:p.speciality,clinic:p.clinic,area:p.area,city:p.city||'',phone:p.phone,address:p.address,category:p.category||'B',lat:'',lng:'',dob:p.dob||'',anniversary:p.anniversary||''}:{id:'',type:'Doctor',name:'',speciality:'',clinic:'',area:(nav[nav.length-1].area)||D.todayArea||'',city:'',phone:'',address:'',category:'B',lat:'',lng:'',dob:'',anniversary:''};
+  if(!A.city && A.area) A.city=(D.areaCity||{})[A.area]||'';
+  var h=top(id?'✏️ Edit':'➕ नया जोड़ें / Add new','',true)+'<div class="stack">'+(id?'':'<button class="btn full" data-act="import">📥 पूरी लिस्ट एक साथ अपलोड करें (Excel / CSV)</button>')+'<div class="types">'+['Doctor','Chemist','Stockist'].map(function(t){ return '<button class="type" data-act="atype" data-t="'+t+'" aria-pressed="'+(A.type===t)+'"><span class="em">'+TYPE[t].em+'</span>'+TYPE[t].hi+'<small class="muted">'+t+'</small></button>'; }).join('')+'</div>';
+  h+='<div class="card stack" style="padding-top:14px">';
+  h+='<div class="field"><label for="a_name">'+(A.type==='Doctor'?'डॉक्टर का नाम / Doctor name':'दुकान/फर्म का नाम / Name')+' *</label><input class="in" id="a_name" value="'+esc(A.name)+'" autocomplete="off"></div>';
+  if(A.type==='Doctor') h+='<div class="field"><span class="lbl">Speciality</span><div class="chips">'+SPECS.map(function(s){ return '<button class="chip" data-act="aspec" data-v="'+s+'" aria-pressed="'+(A.speciality===s)+'">'+s+'</button>'; }).join('')+'</div></div>';
+  h+='<div class="field"><label for="a_clinic">'+(A.type==='Doctor'?'Clinic / Hospital':'Contact person')+'</label><input class="in" id="a_clinic" value="'+esc(A.clinic)+'"></div>';
+  h+='<div class="two"><div class="field"><label for="a_city">🏙️ City / शहर</label><input class="in" id="a_city" list="cityList" value="'+esc(A.city)+'" autocomplete="off" placeholder="Jaise Jaipur"><datalist id="cityList">'+(D.cities||[]).map(function(c){ return '<option value="'+esc(c)+'"></option>'; }).join('')+'</datalist></div>';
+  h+='<div class="field"><label for="a_area">📍 Area *</label><input class="in" id="a_area" list="areaList" value="'+esc(A.area)+'" autocomplete="off" placeholder="Area ka naam"><datalist id="areaList">'+D.areas.map(function(a){ return '<option value="'+esc(a)+'"></option>'; }).join('')+'</datalist></div></div>';
+  h+='<div class="field"><label for="a_phone">📞 Mobile</label><input class="in" id="a_phone" type="tel" inputmode="numeric" value="'+esc(A.phone)+'" placeholder="10 digit"></div>';
+  h+='<div class="field"><label for="a_addr">🏠 Address</label><textarea class="in" id="a_addr">'+esc(A.address)+'</textarea></div>';
+  h+='<button class="btn" data-act="apin">📍 '+(A.lat?'Location lag gayi ✅':'Abhi ki location map pe lagaayein')+'</button>';
+  if(A.type==='Doctor') h+='<div class="field"><span class="lbl">Category (kitni baar milna hai)</span><div class="chips">'+[['A','A · har hafte'],['B','B · 15 din'],['C','C · mahine mein']].map(function(c){ return '<button class="chip" data-act="acat" data-v="'+c[0]+'" aria-pressed="'+(A.category===c[0])+'">'+c[1]+'</button>'; }).join('')+'</div></div>';
+  if(A.type==='Doctor') h+='<div class="two"><div class="field"><label for="a_dob">🎂 जन्मदिन</label><input class="in" type="date" id="a_dob" value="'+(A.dob?'2000-'+esc(A.dob):'')+'"></div><div class="field"><label for="a_ann">💍 शादी की सालगिरह</label><input class="in" type="date" id="a_ann" value="'+(A.anniversary?'2000-'+esc(A.anniversary):'')+'"></div></div><p class="muted" style="margin:-6px 0 0;font-size:.8rem">Optional · साल कोई भी चुनें, सिर्फ दिन-महीना याद रहेगा। 7 दिन पहले होम पर बधाई का बटन आएगा 🎉</p>';
+  h+='</div><button class="btn pri full" data-act="asave" style="min-height:58px;font-size:1.1rem">💾 सेव करें / Save</button></div>';
+  return h;
+}
+function keepAddInputs(){ if(!A) return; ['name','clinic','area','city','phone'].forEach(function(k){ var e=$('#a_'+k); if(e) A[k]=e.value; }); var ad=$('#a_addr'); if(ad) A.address=ad.value;
+  var db=$('#a_dob'), an=$('#a_ann'); if(db) A.dob=db.value?db.value.slice(5):''; if(an) A.anniversary=an.value?an.value.slice(5):''; }
+function saveAdd(force){ A.force=!!force; busy(true);
+  return run('saveParty', A).then(function(newId){ busy(false); closeSheet(); var wasEdit=!!A.id; A=null; return refresh().then(function(){ toast(wasEdit?'✅ Update ho gaya':'✅ Jud gaya'); nav.pop(); if(!wasEdit) nav.push({s:'party', a:newId}); else { var c=cur(); c.hist=null; } render(); }); },
+    function(e){ busy(false); var m=(e&&e.message)||String(e); if(m.indexOf('DUP:')>=0){ sheet('<h3>⚠️ ये पहले से लिस्ट में है?</h3><div class="card">'+esc(m.slice(m.indexOf('DUP:')+4))+'</div><p class="muted" style="margin:0">Same naam + area ya same mobile number mila. Dobara jodne se list mein do baar aayega.</p><button class="btn" data-act="close-sheet">❌ नहीं जोड़ना / Cancel</button><button class="btn pri" data-act="asave-force">➕ फिर भी जोड़ें / Add anyway</button>'); return; } fail(e); }); }
+
+function sReport(text){
+  var h=top('📤 शाम की रिपोर्ट','Evening report',true)+'<div class="stack">';
+  if(text===undefined) return h+'<div class="card"><p class="muted">Report ban rahi hai…</p></div></div>';
+  h+='<div class="report">'+esc(text)+'</div>';
+  h+='<a class="btn wa full" style="min-height:58px;font-size:1.1rem" target="_blank" rel="noopener" href="'+esc(waUrl(D.managerPhone, text))+'">💬 Manager को WhatsApp पर भेजें</a>';
+  h+='<button class="btn full" data-act="copy" data-text="'+esc(text)+'">📋 Copy</button>';
+  return h+'</div>';
+}
+
+// ---------- manager ----------
+function loadMgr(date){ M.data=null; return call('managerData', date||M.date||D.today).then(function(d){ M.data=d; M.date=d.date; render(); }).catch(function(){}); }
+function mrHead(m, right){ return '<div class="mr-h"><div><b>'+esc(m.name)+'</b>'+(m.role==='Manager'?' <span class="pill cat">Manager</span>':'')+'<div class="muted" style="font-size:.85rem">📍 '+esc(m.area||'Area nahi chuna')+'</div></div>'+(right||'')+'</div>'; }
+function attPills(m){
+  var a=m.start?(m.startMap?'<a class="pill done" target="_blank" rel="noopener" href="'+esc(m.startMap)+'">🟢 '+esc(m.start)+' 📍</a>':'<span class="pill done">🟢 '+esc(m.start)+'</span>'):'<span class="pill late">🟢 दिन शुरू नहीं किया</span>';
+  if(m.end) a+=m.endMap?'<a class="pill cat" target="_blank" rel="noopener" href="'+esc(m.endMap)+'">🔴 '+esc(m.end)+' 📍</a>':'<span class="pill cat">🔴 '+esc(m.end)+'</span>';
+  a+=m.plan.length?'<span class="pill '+(m.planDone===m.plan.length?'done':'due')+'">🗓️ प्लान '+m.planDone+'/'+m.plan.length+'</span>':'<span class="pill late">🗓️ प्लान नहीं बनाया</span>';
+  if(m.notMet.length) a+='<span class="pill late">❌ '+m.notMet.length+' नहीं मिले</span>';
+  return '<div style="display:flex;gap:6px;flex-wrap:wrap">'+a+'</div>';
+}
+function sManager(){
+  var h=top('👔 Manager','Team ka hisaab',true)+'<div class="stack">';
+  h+='<div class="mgr-tabs">'+[['team','👥','टीम'],['plan','🗓️','प्लान'],['missed','❗','बाकी'],['cover','🎯','कवरेज'],['tour','📅','टूर'],['samples','🎁','स्टॉक'],['orders','🧾','ऑर्डर'],['mrs','🧑‍💼','MR'],['products','💊','प्रोडक्ट']].map(function(t){ return '<button data-act="mtab" data-t="'+t[0]+'" aria-pressed="'+(M.tab===t[0])+'"><span class="em">'+t[1]+'</span>'+t[2]+'</button>'; }).join('')+'</div>';
+  var d=M.data; if(!d) return h+'<div class="card"><p class="muted">Loading…</p></div></div>';
+  if(M.tab!=='mrs'&&M.tab!=='products') h+='<div class="field"><label for="m_date">📅 Date'+(M.tab==='tour'||M.tab==='orders'||M.tab==='cover'?' <span class="muted" style="font-weight:500">(महीना: '+esc(monthName(d.month))+')</span>':'')+'</label><input class="in" type="date" id="m_date" value="'+esc(d.date)+'"></div>';
+  if(M.tab==='team'){
+    var tv=0,tc=0,ts=0,tn=0; d.team.forEach(function(m){ tv+=m.visits; tc+=m.calls; ts+=m.samples; tn+=m.notMet.length; });
+    h+='<button class="btn pri full" data-act="addmr-go">🧑‍💼 ➕ नया MR जोड़ें / Add MR</button>';
+    h+='<div class="stats"><div class="stat"><b>'+tv+'</b><span>✅ Visits'+(tn?'<br>❌ '+tn+' नहीं मिले':'')+'</span></div><div class="stat"><b>'+tc+'</b><span>📞 Calls</span></div><div class="stat"><b>'+ts+'</b><span>🎁 Samples</span></div></div>';
+    if(d.team.length<2) h+='<div class="hint">Abhi team mein koi MR nahi hai. Upar <b>➕ नया MR जोड़ें</b> dabaiye, naam aur number daaliye, phir unhe unka link WhatsApp karein.</div>';
+    d.team.forEach(function(m){
+      var open=M.open[m.id];
+      h+='<div class="mr"><div style="display:flex;gap:8px;align-items:flex-start"><div class="mr-h" style="flex:1" data-act="mopen" data-id="'+esc(m.id)+'"><div><b>'+esc(m.name)+'</b>'+(m.role==='Manager'?' <span class="pill cat">Manager</span>':'')+'<div class="muted" style="font-size:.85rem">📍 '+esc(m.area||'Area nahi chuna')+(m.first?' · ⏱ '+esc(m.first)+'–'+esc(m.last):'')+'</div></div><span>'+(open?'▲':'▼')+'</span></div><button class="btn sm" data-act="medit" data-id="'+esc(m.id)+'" aria-label="Naam badlein">✏️ नाम</button></div>'
+        +attPills(m)
+        +'<div class="nums"><div><b>'+m.visits+'</b><span>Visits</span></div><div><b>'+m.calls+'</b><span>Calls ('+m.connected+' baat)</span></div><div><b>'+m.samples+'</b><span>Samples</span></div></div>'
+        +'<div style="font-size:.86rem">🎯 टारगेट: 🩺 <b>'+m.doctors+'/'+m.target.doctors+'</b> · 💊📦 <b>'+(m.chemists+m.stockists)+'/'+m.target.chemists+'</b>'+(m.coverage.pct!=null?' · महीने का कवरेज <b>'+m.coverage.pct+'%</b>':'')+'</div>'
+        +(m.missed.length?'<button class="btn sm full" data-act="mmissed" data-id="'+esc(m.id)+'" style="color:var(--red);border-color:var(--red-soft);background:var(--red-soft)">❗ '+m.missed.length+' विज़िट बाकी / pending — देखें</button>':'<div class="pill done" style="text-align:center">✅ Koi visit baaki nahi</div>');
+      if(open) h+='<div class="lbl" style="margin-top:4px">✅ विज़िट / Visits ('+m.list.length+')</div><div class="vlist">'+(m.list.length?m.list.map(function(v){ return '<div class="v"><span class="t">'+esc(v.time)+'</span><div class="g"><b>'+(TYPE[v.type]?TYPE[v.type].em:'')+' '+esc(v.party)+'</b> <span class="muted">'+esc(v.area)+'</span>'
+        +(v.met===false?'<br><span style="color:var(--red);font-weight:700">❌ नहीं मिले'+(v.reason?': '+esc(v.reason):'')+'</span>':(v.interest?' · '+esc(v.interest):''))
+        +(v.samples?'<br>🎁 '+esc(v.samples):'')+(v.order?'<br>🧾 '+esc(v.order):'')+(v.rcpa?'<br>📋 '+esc(v.rcpa):'')+(v.discount||v.scheme||v.orderValue?'<br>🏷️ '+esc([v.discount?v.discount+'% off':'',v.scheme,v.orderValue?'₹'+v.orderValue:''].filter(Boolean).join(' · ')):'')+(v.remarks?'<br>📝 '+esc(v.remarks):'')+'</div>'+(v.map?'<a class="btn sm" target="_blank" rel="noopener" href="'+esc(v.map)+'">📍</a>':'<span class="muted" title="No location">–</span>')+'</div>'; }).join(''):'<p class="muted">Is din koi visit nahi</p>')+'</div>';
+      if(open) h+='<div class="lbl" style="margin-top:4px">📞 कॉल / Calls ('+m.calls+')</div><div class="vlist">'+((m.callList||[]).length?m.callList.map(function(c){ var ok=/baat hui|call hui/i.test(c.outcome); return '<div class="v"><span class="t">'+esc(c.time)+'</span><div class="g"><b>'+(c.via==='WhatsApp'?'💬':'📞')+' '+esc(c.party)+'</b><br><span style="font-weight:700;color:'+(ok?'var(--pri)':'var(--amb)')+'">'+(ok?'✅ ':'⏳ ')+esc(c.outcome)+'</span>'+(c.notes?'<br>📝 '+esc(c.notes):'')+'</div></div>'; }).join(''):'<p class="muted">Is din koi call nahi</p>')+'</div>';
+      h+='</div>';
+    });
+  }
+  if(M.tab==='plan'){
+    h+='<div class="hint">🗓️ <b>प्लान vs असल</b> — MR ने सुबह जो टाइम-टेबल बनाया और असल में क्या हुआ।<br>✅ मिल लिए · ❌ नहीं मिले · ⏰ समय निकल गया · ⏳ बाकी</div>';
+    d.team.forEach(function(m){
+      h+='<div class="mr">'+mrHead(m, m.plan.length?'<span class="pill '+(m.planDone===m.plan.length?'done':'due')+'" style="font-size:.9rem">'+m.planDone+'/'+m.plan.length+'</span>':'')+attPills(m);
+      if(!m.plan.length) h+='<p class="muted" style="margin:0">इस दिन का प्लान नहीं बनाया</p>';
+      else h+=bar(m.planDone,m.plan.length)+'<div class="vlist">'+m.plan.map(function(s){ return '<div class="v"><span class="t">'+esc(s.time)+'</span><div class="g"><b>'+(TYPE[s.type]?TYPE[s.type].em:'')+' '+esc(s.party)+'</b> <span class="muted">'+esc(s.area||'')+'</span></div>'+slotPill(s.status)+'</div>'; }).join('')+'</div>';
+      var inPlan=m.plan.map(function(s){ return s.party; }); var extra=m.list.filter(function(v){ return v.met!==false && inPlan.indexOf(v.party)<0; });
+      if(extra.length) h+='<div class="muted" style="font-size:.86rem">➕ बिना प्लान के भी मिले: '+esc(extra.map(function(v){ return v.party+' ('+v.time+')'; }).join(', '))+'</div>';
+      h+='</div>'; });
+  }
+  if(M.tab==='missed'){
+    var tot=0; d.team.forEach(function(m){ tot+=m.missed.length; });
+    h+='<div class="hint">❗ यहाँ वो डॉक्टर/केमिस्ट हैं जिनकी विज़िट बाकी है:<br>⏰ <b>Follow-up chhoota</b> — tay date nikal gayi<br>📅 <b>Der ho gayi</b> — A: 7 din, B: 15 din, C: 30 din se zyada<br>🆕 <b>Abhi tak nahi mile</b> — list mein jude 7 din se zyada, par ek bhi visit nahi</div>';
+    var nm0=0; d.team.forEach(function(m){ nm0+=m.notMet.length; });
+    if(nm0) h+='<div class="mr"><b>❌ '+esc(fdate(d.date))+' को गए पर नहीं मिले ('+nm0+')</b><div class="vlist">'+d.team.map(function(m){ return m.notMet.map(function(x){ return '<div class="v"><span class="t">'+esc(x.time)+'</span><div class="g"><b>'+esc(x.party)+'</b> <span class="muted">· '+esc(m.name)+'</span><br><span style="color:var(--red)">'+esc(x.reason||'—')+'</span></div>'+(x.map?'<a class="btn sm" target="_blank" rel="noopener" href="'+esc(x.map)+'">📍</a>':'')+'</div>'; }).join(''); }).join('')+'</div></div>';
+    if(!tot) h+='<div class="card empty"><span class="em">🎉</span><p>Koi visit baaki nahi</p></div>';
+    d.team.forEach(function(m){ if(!m.missed.length || (M.only && M.only!==m.id)) return;
+      var c=function(k){ return m.missed.filter(function(x){ return x.kind===k; }).length; };
+      h+='<div class="mr"><div class="mr-h"><div><b>'+esc(m.name)+'</b><div class="muted" style="font-size:.84rem">⏰ '+c('followup')+' follow-up · 📅 '+c('overdue')+' der · 🆕 '+c('never')+' abhi tak nahi mile</div></div><span class="pill late">❗ '+m.missed.length+'</span></div><div class="vlist">'
+        +m.missed.map(function(x){ var ic={followup:'⏰',overdue:'📅',never:'🆕'}[x.kind]; return '<div class="v"><span style="font-size:1.2rem">'+ic+'</span><div class="g"><b>'+(TYPE[x.type]?TYPE[x.type].em:'')+' '+esc(x.party)+'</b> <span class="muted">'+esc([x.area,x.city].filter(Boolean).join(', '))+(x.category&&x.type==='Doctor'?' · '+esc(x.category):'')+'</span><br><span style="color:var(--red);font-weight:600">'+esc(x.reason)+'</span>'+(x.kind==='followup'?' <span class="muted">('+esc(fdate(x.since))+', '+x.days+' din pehle)</span>':'')+(x.lastVisit?'<br><span class="muted">Last visit: '+esc(fdate(x.lastVisit))+'</span>':'')+'</div></div>'; }).join('')+'</div>';
+      var ph=(d.mrs.filter(function(z){ return z.id===m.id; })[0]||{}).phone;
+      if(ph){ var nm=m.name.replace(/\s*\(.*\)\s*$/,''); var txt='Namaste '+nm+' ji,\n\nNeeche diye gaye doctors / chemists ki visit baaki hai. Kripya inhe apne agle plan mein shaamil karke jald visit karein:\n\n'+m.missed.slice(0,25).map(function(x,i){ return (i+1)+'. '+(x.type==='Doctor'&&!/^dr/i.test(x.party)?'Dr. ':'')+x.party+' ('+x.area+')\n    '+x.reason; }).join('\n')+(m.missed.length>25?'\n...aur '+(m.missed.length-25)+' baaki':'')+'\n\nDhanyavaad,\n'+D.user.name; h+='<a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(waUrl(ph,txt))+'">💬 '+esc(m.name)+' ko list WhatsApp karein</a>'; }
+      h+='</div>'; });
+    if(M.only) h+='<button class="btn full" data-act="mmissed-all">Sab MR ki list dekhein</button>';
+  }
+  if(M.tab==='cover'){
+    h+='<div class="hint">🎯 <b>कवरेज</b> = इस महीने कितने डॉक्टर पूरे मिले।<br>A डॉक्टर: महीने में 4 बार · B: 2 बार · C: 1 बार<br>नीचे हर MR का <b>रोज़ का टारगेट</b> भी बदल सकते हैं।</div>';
+    d.team.forEach(function(m){ var c=m.coverage;
+      var row=function(k){ return '<div><div style="display:flex;justify-content:space-between;font-size:.88rem"><span>'+k+' डॉक्टर</span><b>'+c[k][0]+' / '+c[k][1]+'</b></div>'+bar(c[k][0],c[k][1])+'</div>'; };
+      h+='<div class="mr">'+mrHead(m,'<span class="pill '+(c.pct>=80?'done':c.pct>=50?'due':'late')+'" style="font-size:1rem">'+(c.pct==null?'—':c.pct+'%')+'</span>')
+        +row('A')+row('B')+row('C')+'<div class="muted" style="font-size:.84rem">इस महीने कुल '+c.monthVisits+' मुलाकातें</div>'
+        +'<div class="lbl" style="margin-top:4px">📌 रोज़ का टारगेट</div><div class="r2" style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end"><div class="field"><label for="tgd_'+esc(m.id)+'" style="font-size:.8rem">🩺 डॉक्टर</label><input class="in" type="number" inputmode="numeric" id="tgd_'+esc(m.id)+'" value="'+m.target.doctors+'"></div><div class="field"><label for="tgc_'+esc(m.id)+'" style="font-size:.8rem">💊 केमिस्ट</label><input class="in" type="number" inputmode="numeric" id="tgc_'+esc(m.id)+'" value="'+m.target.chemists+'"></div><button class="btn" data-act="mtarget" data-id="'+esc(m.id)+'">💾</button></div></div>'; });
+  }
+  if(M.tab==='tour'){
+    h+='<div class="hint">📅 MR का <b>'+esc(monthName(d.month))+'</b> का टूर प्लान। देखकर <b>✅ Approve</b> करें।<br><small class="muted">Agle mahine ka dekhna ho to upar date agle mahine ki chuniye.</small></div>';
+    d.team.forEach(function(m){ var t=m.tour;
+      h+='<div class="mr">'+mrHead(m, t.length?(m.tourStatus==='Approved'?'<span class="pill done">✅ Approved</span>':'<span class="pill due">⏳ Pending</span>'):'<span class="pill late">नहीं बनाया</span>');
+      if(t.length){ h+='<div class="vlist">'+t.map(function(x){ var wd=new Date(x.date+'T12:00:00').getDay(); return '<div class="v"><span class="t" style="width:70px">'+esc(fdate(x.date))+' '+WEEK[wd]+'</span><div class="g">📍 '+esc(x.area)+((x.names||[]).length?'<br><small class="muted">👥 '+esc(x.names.join(' · '))+'</small>':'')+'</div>'+(x.status==='Approved'?'✅':'⏳')+'</div>'; }).join('')+'</div>';
+        if(m.tourStatus!=='Approved') h+='<button class="btn pri sm full" data-act="mtour" data-id="'+esc(m.id)+'">✅ Approve करें</button>'; }
+      else { var ph=(d.mrs.filter(function(z){ return z.id===m.id; })[0]||{}).phone; if(ph && m.role!=='Manager') h+='<a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(waUrl(ph,'Namaste '+m.name+' ji, kripya '+monthName(d.month)+' ka tour plan app mein bhar dijiye (Home > 📅 Tour plan). Dhanyavaad'))+'">💬 टूर प्लान भरने को कहें</a>'; }
+      h+='</div>'; });
+  }
+  if(M.tab==='samples'){
+    var act=d.mrs.filter(function(m){ return m.active; }), prods=d.products.filter(function(p){ return p.active; });
+    h+='<div class="card stack" style="padding-top:14px;border:2px solid var(--pri)"><h3 style="margin:0">📦 MR को सैंपल दें / Issue samples</h3><div class="field"><label for="si_mr">किसको (MR)</label><select class="in" id="si_mr">'+act.map(function(m){ return '<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>'; }).join('')+'</select></div>'
+      +'<div class="two"><div class="field"><label for="si_p">Product</label><select class="in" id="si_p">'+prods.map(function(p){ return '<option>'+esc(p.name)+'</option>'; }).join('')+'</select></div><div class="field"><label for="si_q">कितने</label><input class="in" id="si_q" type="number" inputmode="numeric" placeholder="50"></div></div><button class="btn pri" data-act="missue">✅ सैंपल दें</button></div>';
+    h+='<div class="lbl">🎒 किस MR के पास कितना स्टॉक</div>';
+    d.team.forEach(function(m){ if(!m.stock.length) return; h+='<div class="mr"><b>'+esc(m.name)+'</b><table><thead><tr><th>Product</th><th style="text-align:right">दिए</th><th style="text-align:right">बांटे</th><th style="text-align:right">बचे</th></tr></thead><tbody>'+m.stock.map(function(x){ return '<tr><td>'+esc(x.product)+'</td><td class="n">'+x.issued+'</td><td class="n">'+x.given+'</td><td class="n" style="color:'+(x.balance<=5?'var(--red)':'var(--pri)')+'">'+x.balance+'</td></tr>'; }).join('')+'</tbody></table></div>'; });
+    var keys=Object.keys(d.samplesMonth).sort();
+    h+='<div class="card"><h3>🎁 Product-wise samples</h3>'+(keys.length?'<table><thead><tr><th>Product</th><th style="text-align:right">'+esc(fdate(d.date))+'</th><th style="text-align:right">Is mahine</th></tr></thead><tbody>'+keys.map(function(k){ return '<tr><td>'+esc(k)+'</td><td class="n">'+(d.samplesDay[k]||0)+'</td><td class="n">'+d.samplesMonth[k]+'</td></tr>'; }).join('')+'</tbody></table>':'<p class="muted">Is mahine abhi koi sample nahi</p>')+'</div>';
+    h+='<div class="card"><h3>Kisko kya diya ('+esc(fdate(d.date))+')</h3>'+(d.sampleLog.length?'<table><thead><tr><th>MR</th><th>Kisko</th><th>Product</th><th style="text-align:right">Qty</th></tr></thead><tbody>'+d.sampleLog.map(function(s){ return '<tr><td>'+esc(s.mr)+'</td><td>'+esc(s.party)+'</td><td>'+esc(s.product)+'</td><td class="n">'+esc(s.qty)+'</td></tr>'; }).join('')+'</tbody></table>':'<p class="muted">Is din koi sample nahi diya</p>')+'</div>';
+  }
+  if(M.tab==='orders'){
+    var ok=Object.keys(d.ordersMonth).sort();
+    h+='<button class="btn pri full" data-act="summary">📊 पूरे महीने की रिपोर्ट / Monthly summary</button>';
+    h+='<div class="card"><h3>🧾 '+esc(monthName(d.month))+' के ऑर्डर (product-wise)'+(d.ordersValueMonth?' · ₹'+esc(d.ordersValueMonth):'')+'</h3>'+(ok.length?'<table><tbody>'+ok.map(function(k){ return '<tr><td>'+esc(k)+'</td><td class="n">'+d.ordersMonth[k]+'</td></tr>'; }).join('')+'</tbody></table>':'<p class="muted">Is mahine abhi koi order nahi</p>')+'</div>';
+    h+='<div class="card"><h3>📋 RCPA — कौन डॉक्टर हमारी दवा लिख रहे हैं</h3>'+(d.rcpaByDoctor.length?'<div class="vlist">'+d.rcpaByDoctor.map(function(r){ return '<div class="v"><span style="font-size:1.2rem">🩺</span><div class="g"><b>'+esc(r.doctor)+'</b><br>'+Object.keys(r.products).map(function(k){ return esc(k)+' <b>'+r.products[k]+'</b>'; }).join(' · ')+'</div></div>'; }).join('')+'</div>':'<p class="muted">Abhi koi RCPA nahi. Chemist visit mein MR bharte hain.</p>')+'</div>';
+    h+='<div class="card"><h3>Order list</h3>'+(d.orderLog.length?'<table><thead><tr><th>Date</th><th>Kisse</th><th>Product</th><th style="text-align:right">Qty</th></tr></thead><tbody>'+d.orderLog.map(function(o){ return '<tr><td>'+esc(fdate(o.date))+'<br><small class="muted">'+esc(o.mr)+'</small></td><td>'+esc(o.party)+(o.discount?'<br><small class="muted">🏷️ '+esc(o.discount)+'% off</small>':'')+'</td><td>'+esc(o.product)+'</td><td class="n">'+esc(o.qty)+(o.value?'<br><small class="muted">₹'+esc(o.value)+'</small>':'')+'</td></tr>'; }).join('')+'</tbody></table>':'<p class="muted">—</p>')+'</div>';
+  }
+  if(M.tab==='mrs'){
+    h+='<div class="card stack" style="padding-top:14px;border:2px solid var(--pri)"><h3 style="margin:0">🧑‍💼 ➕ नया MR जोड़ें / Add MR</h3><div class="field"><label for="m_name">Naam</label><input class="in" id="m_name"></div><div class="field"><label for="m_phone">Mobile (WhatsApp)</label><input class="in" id="m_phone" type="tel" inputmode="numeric"></div><button class="btn pri" data-act="maddmr">MR jodein aur link banayein</button></div>';
+    d.mrs.forEach(function(m){
+      var linkMsg='Namaste '+m.name+' ji,\n\n'+APP_NAME+' mein aapka swagat hai. Neeche diye gaye link se app kholkar apni daily visits, calls aur samples darj karein:\n\n'+m.link+'\n\nKripya yeh link kisi ke saath share na karein, yeh sirf aapke liye hai.\n\nDhanyavaad,\n'+D.user.name;
+      h+='<div class="mr"><div class="mr-h"><div><b>'+esc(m.name)+'</b> '+(m.role==='Manager'?'<span class="pill cat">Manager</span>':m.active?'<span class="pill done">Active</span>':'<span class="pill late">Band</span>')+'<div class="muted" style="font-size:.85rem">'+esc(m.phone||'')+'</div></div></div>'
+        +(m.active?'<div class="linkbox">'+esc(m.link)+'</div><div class="row">'+(m.phone?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(waUrl(m.phone,linkMsg))+'">💬 Link bhejein</a>':'')+'<button class="btn sm" data-act="copy" data-text="'+esc(m.link)+'">📋 Copy</button>'+(m.role!=='Manager'?'<button class="btn sm" data-act="mreset" data-id="'+esc(m.id)+'">🔄 Naya link</button>':'')+'</div>':'')
+        +'<div class="row"><button class="btn sm pri" data-act="medit" data-id="'+esc(m.id)+'">✏️ नाम / फोन बदलें</button>'+(m.role!=='Manager'?'<button class="btn sm red" data-act="mremove" data-id="'+esc(m.id)+'">🗑️ टीम से हटाएं</button>':'')+'</div>'
+        +(m.role!=='Manager'?'<button class="btn sm '+(m.active?'red':'')+'" data-act="mactive" data-id="'+esc(m.id)+'" data-on="'+(!m.active)+'">'+(m.active?'⛔ Band karein':'✅ Chalu karein')+'</button>':'')+'</div>';
+    });
+    h+='<button class="btn full" data-act="import">📥 किसी MR के लिए डॉक्टर लिस्ट अपलोड करें</button>';
+    h+='<div class="card"><h3>📊 सारा डेटा / All data</h3><p class="muted" style="margin:0 0 10px;font-size:.86rem">Har MR aur manager ki har entry (visit, call, sample, order, plan, photo link) apne aap Google Sheet mein save hoti hai. Alag copy chahiye to backup banayein.</p><div class="stack" style="padding:0;gap:8px"><a class="btn full" target="_blank" rel="noopener" href="'+esc(d.sheetUrl)+'">📊 Google Sheet kholein</a><button class="btn pri full" data-act="mbackup">💾 पूरे डेटा की बैकअप कॉपी बनाएं</button>'+(M.backup?'<a class="btn sm full" target="_blank" rel="noopener" href="'+esc(M.backup)+'">✅ Backup bana — kholein</a>':'')+'</div></div>';
+  }
+  if(M.tab==='products'){
+    h+='<div class="card stack" style="padding-top:14px"><div class="field"><label for="m_prod">➕ Naya product</label><input class="in" id="m_prod"></div><button class="btn pri" data-act="maddprod">Product jodein</button></div>';
+    h+='<div class="hint">💰 <b>रेट कार्ड</b>: MRP, PTR (केमिस्ट का रेट), PTS (स्टॉकिस्ट का रेट) भरें। ऑर्डर की कीमत इन्हीं से अपने आप बनेगी। <a href="#" data-act="library">📚 कैटलॉग / ब्रोशर अपलोड</a></div>';
+    d.products.forEach(function(p,i){ h+='<div class="mr"><div class="mr-h"><b>'+esc(p.name)+(p.active?'':' <span class="pill late">Band</span>')+'</b><button class="btn sm" data-act="mprod" data-p="'+esc(p.name)+'" data-on="'+(!p.active)+'">'+(p.active?'Band karein':'Chalu karein')+'</button></div>'
+      +'<div style="display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px">'+[['pack','Pack','10 tab'],['mrp','MRP ₹',''],['ptr','PTR ₹',''],['pts','PTS ₹','']].map(function(f){ return '<div class="field"><label for="rt_'+f[0]+'_'+i+'" style="font-size:.78rem">'+f[1]+'</label><input class="in" style="padding:8px" id="rt_'+f[0]+'_'+i+'" '+(f[0]==='pack'?'':'inputmode="decimal" ')+'value="'+esc(p[f[0]]||'')+'" placeholder="'+f[2]+'"></div>'; }).join('')+'</div>'
+      +'<button class="btn sm" data-act="mrate" data-i="'+i+'" data-p="'+esc(p.name)+'">💾 रेट सेव करें</button></div>'; });
+  }
+  return h+'</div>';
+}
+
+// ---------- professional WhatsApp messages: Hindi / English / Hinglish ----------
+var LANG = store('mrlang') || 'hg';
+var LANGS = [['hi','हिंदी'],['en','English'],['hg','Hinglish']];
+function langChips(){ return '<div class="chips" role="group" aria-label="Message language"><span class="lbl" style="align-self:center">🌐 भाषा:</span>'+LANGS.map(function(l){ return '<button class="chip" data-act="lang" data-v="'+l[0]+'" aria-pressed="'+(LANG===l[0])+'">'+l[1]+'</button>'; }).join('')+'</div>'; }
+function hello(p, lg){
+  var n=String(p.name||'').replace(/^dr\.?\s*/i,'');
+  if(p.type==='Doctor') return {en:'Dear Dr. '+n+',', hi:'आदरणीय डॉ. '+n+' जी,', hg:'Aadarniya Dr. '+n+' ji,'}[lg];
+  if(p.clinic) return {en:'Dear '+p.clinic+',', hi:'आदरणीय '+p.clinic+' जी,', hg:'Aadarniya '+p.clinic+' ji,'}[lg];
+  return {en:'Dear Sir / Madam,', hi:'आदरणीय महोदय / महोदया,', hg:'Aadarniya Sir / Madam,'}[lg];
+}
+function sig(lg){ var co=(D&&D.company)||''; return {en:'Warm regards,', hi:'सादर,', hg:'Saadar,'}[lg]+'\n'+D.user.name+(co?'\n'+co:''); }
+function whenTxt(date, time, lg){
+  if(!date) return {en:'at your convenience', hi:'आपकी सुविधा अनुसार', hg:'aapki suvidha anusaar'}[lg];
+  var d=fdate(date), t=time||'';
+  return {en:'on '+d+(t?' at '+t:''), hi:d+' को'+(t?' '+t+' बजे':''), hg:d+' ko'+(t?' '+t+' baje':'')}[lg];
+}
+function msg(kind, p, o, lg){
+  lg=lg||LANG; o=o||{}; var co=(D&&D.company)||''; var prods=(o.prods||[]).join(', ');
+  var place=p.type==='Doctor'?{en:'your clinic',hi:'क्लिनिक',hg:'clinic'}:{en:'your store',hi:'प्रतिष्ठान',hg:'store'};
+  var T={
+    intro:{en:'Greetings'+(co?' from '+co:'')+'. I am '+D.user.name+', the medical representative for your area. I would appreciate a few minutes of your time to share information about our products.\n\nKindly let me know a convenient time to meet.',
+      hi:(co?co+' की ओर से ':'')+'नमस्कार। मैं '+D.user.name+', आपके क्षेत्र का मेडिकल प्रतिनिधि हूँ। हमारे उत्पादों की जानकारी देने के लिए आपसे कुछ मिनट मिलना चाहूँगा।\n\nकृपया मिलने का सुविधाजनक समय बताएं।',
+      hg:(co?co+' ki taraf se ':'')+'namaskar. Main '+D.user.name+', aapke area ka medical representative hoon. Hamare products ki jaankari dene ke liye aapse kuch minute milna chahunga.\n\nKripya milne ka suvidhajanak samay batayein.'},
+    appt:{en:'I would like to visit you '+whenTxt(o.date,o.time,'en')+' to discuss our products. Please let me know if another time would be more convenient for you.',
+      hi:'मैं '+whenTxt(o.date,o.time,'hi')+' आपसे मिलने आना चाहूँगा। यदि कोई और समय आपके लिए अधिक सुविधाजनक हो तो कृपया बताएं।',
+      hg:'Main '+whenTxt(o.date,o.time,'hg')+' aapse milne aana chahunga. Agar koi aur samay aapke liye zyada suvidhajanak ho to kripya batayein.'},
+    feedback:{en:'Thank you for your continued support. I would value your feedback on '+(prods||'our products')+'. Please feel free to contact me for any product information or samples.',
+      hi:'आपके निरंतर सहयोग के लिए धन्यवाद। '+(prods||'हमारे उत्पादों')+' के बारे में आपकी राय जानना चाहूँगा। किसी भी जानकारी या सैंपल के लिए निःसंकोच संपर्क करें।',
+      hg:'Aapke lagataar sahyog ke liye dhanyavaad. '+(prods||'Hamare products')+' ke baare mein aapki raay jaanna chahunga. Kisi bhi jaankari ya sample ke liye bina sankoch sampark karein.'},
+    order:{en:'Greetings'+(co?' from '+co:'')+'. Kindly let me know if you require stock of any of our products this week. We will ensure prompt supply.',
+      hi:(co?co+' की ओर से ':'')+'नमस्कार। कृपया बताएं कि क्या इस सप्ताह आपको हमारे किसी उत्पाद का स्टॉक चाहिए। हम समय पर सप्लाई सुनिश्चित करेंगे।',
+      hg:(co?co+' ki taraf se ':'')+'namaskar. Kripya batayein ki kya is hafte aapko hamare kisi product ka stock chahiye. Hum samay par supply sunishchit karenge.'},
+    thanks:{en:'Thank you for your valuable time today.'+(prods?' Please feel free to reach out for any information on '+prods+'.':'')+' I look forward to your continued support.',
+      hi:'आज अपना बहुमूल्य समय देने के लिए धन्यवाद।'+(prods?' '+prods+' से संबंधित किसी भी जानकारी के लिए निःसंकोच संपर्क करें।':'')+' आपके सहयोग की आशा रहेगी।',
+      hg:'Aaj apna keemti samay dene ke liye dhanyavaad.'+(prods?' '+prods+' se judi kisi bhi jaankari ke liye bina sankoch sampark karein.':'')+' Aapke sahyog ki asha rahegi.'},
+    missed:{en:'I visited '+place.en+' today but was unable to meet you. I will visit again '+(o.date?whenTxt(o.date,o.time,'en'):'soon')+'. Please let me know if another time suits you better.',
+      hi:'आज मैं आपके '+place.hi+' पर आया था, परंतु आपसे मुलाकात नहीं हो सकी। मैं '+(o.date?whenTxt(o.date,o.time,'hi'):'जल्द ही')+' पुनः आऊँगा। यदि कोई और समय उचित हो तो कृपया बताएं।',
+      hg:'Aaj main aapke '+place.hg+' par aaya tha, lekin aapse mulaqat nahi ho saki. Main '+(o.date?whenTxt(o.date,o.time,'hg'):'jaldi hi')+' dobara aaunga. Agar koi aur samay theek ho to kripya batayein.'},
+    brochure:{en:'Please find our '+(o.title||'product catalogue')+' for your reference:\n'+(o.link||'')+'\n\nI would be happy to share any further details.',
+      hi:'आपकी जानकारी के लिए हमारा '+(o.title||'प्रोडक्ट कैटलॉग')+' भेज रहा हूँ:\n'+(o.link||'')+'\n\nकिसी भी अतिरिक्त जानकारी के लिए अवश्य बताएं।',
+      hg:'Aapki jaankari ke liye hamara '+(o.title||'product catalogue')+' bhej raha hoon:\n'+(o.link||'')+'\n\nKisi bhi aur jaankari ke liye zaroor batayein.'},
+    rate:{en:'Please find our current rate list below:\n\n'+rateLines(p.type)+'\n\nKindly let me know your requirement.',
+      hi:'हमारी वर्तमान रेट लिस्ट नीचे दी गई है:\n\n'+rateLines(p.type)+'\n\nकृपया अपनी आवश्यकता बताएं।',
+      hg:'Hamari current rate list neeche di gayi hai:\n\n'+rateLines(p.type)+'\n\nKripya apni zaroorat batayein.'},
+    bday:{en:'Wishing you a very happy birthday! May the year ahead bring you good health, happiness and success.',
+      hi:'जन्मदिन की हार्दिक शुभकामनाएं! आने वाला वर्ष आपके लिए उत्तम स्वास्थ्य, खुशियां और सफलता लेकर आए।',
+      hg:'Janmdin ki haardik shubhkamnayein! Aane wala saal aapke liye achha swasthya, khushiyan aur safalta lekar aaye.'},
+    anniv:{en:'Warm wishes to you and your family on your wedding anniversary. Wishing you many more years of happiness together.',
+      hi:'विवाह वर्षगांठ की हार्दिक शुभकामनाएं! आपको और आपके परिवार को ढेरों खुशियां मिलें।',
+      hg:'Shaadi ki saalgirah ki haardik shubhkamnayein! Aapko aur aapke parivaar ko dheron khushiyan milein.'}
+  };
+  return hello(p,lg)+'\n\n'+T[kind][lg]+'\n\n'+sig(lg);
+}
+
+// ---------- sheets (popups) ----------
+function sheet(html){ $('#layer').innerHTML='<div class="sheet" data-act="sheet-bg"><div class="box">'+html+'</div></div>'; }
+function closeSheet(){ $('#layer').innerHTML=''; }
+function cityGroups(){ var g={}; D.areas.forEach(function(a){ var c=(D.areaCity||{})[a]||'बिना शहर / No city'; (g[c]=g[c]||[]).push(a); }); return Object.keys(g).sort(function(a,b){ return (a.indexOf('बिना')===0)-(b.indexOf('बिना')===0) || a.localeCompare(b); }).map(function(c){ return [c,g[c]]; }); }
+function areaSheet(){
+  var btn=function(a){ var n=D.parties.filter(function(p){ return p.area===a; }).length; return '<button data-act="setarea" data-v="'+esc(a)+'" data-name="'+esc(a.toLowerCase())+'"><span class="em">📍</span><span>'+esc(a)+' <small class="muted">('+n+')</small></span></button>'; };
+  sheet('<h3>📍 आज किस एरिया में जा रहे हैं?</h3>'
+    +(D.areas.length>5?'<input class="in" id="areaQ" type="search" placeholder="🔍 एरिया खोजें / Search area" autocomplete="off">':'')
+    +'<div id="areaAll" style="display:flex;flex-direction:column;gap:10px">'+cityGroups().map(function(g){ return '<div class="lbl" data-city>🏙️ '+esc(g[0])+'</div><div class="big-choice">'+g[1].map(btn).join('')+'</div>'; }).join('')+'</div>'
+    +'<p class="muted" id="areaNone" hidden>Ye area list mein nahi hai. Neeche naya jodein 👇</p>'
+    +'<div class="field"><label for="newArea">➕ Naya area</label><div class="row"><input class="in" id="newArea" style="flex:1" placeholder="Area ka naam"><button class="btn pri" data-act="setarea-new" style="flex:0 0 auto">OK</button></div></div><button class="btn" data-act="close-sheet">Band karein</button>');
+}
+function filterAreas(q){ q=q.trim().toLowerCase(); var any=false;
+  document.querySelectorAll('#areaAll [data-name]').forEach(function(b){ var ok=!q||b.dataset.name.indexOf(q)>=0; b.hidden=!ok; if(ok) any=true; });
+  document.querySelectorAll('#areaAll [data-city]').forEach(function(x){ x.hidden=!!q; });
+  var none=$('#areaNone'); if(none) none.hidden=any; var n=$('#newArea'); if(n && !any) n.value=$('#areaQ').value.trim(); }
+var pendingCall=null;
+function callSheet(p, via){
+  sheet('<h3>'+(via==='WhatsApp'?'💬':'📞')+' '+esc(p.name)+' — क्या हुआ?</h3><div class="big-choice">'
+    +(via==='WhatsApp'?[['Message bheja','✉️'],['WhatsApp call hui','✅'],['Jawab nahi aaya','⏳']]:[[via==='WACall'?'WhatsApp call hui':'Baat hui','✅'],['Phone nahi uthaya','📵'],['Busy / baad mein','⏳'],['Number galat','❌']]).map(function(o){ return '<button data-act="callres" data-v="'+esc(o[0])+'"><span class="em">'+o[1]+'</span>'+esc(o[0])+'</button>'; }).join('')+'</div>'
+    +'<div class="field"><label for="callNote">📝 Note (optional)</label><input class="in" id="callNote" placeholder="Kya baat hui"></div><button class="btn" data-act="close-sheet">Skip</button>');
+}
+function waBizUrl(phone){ var n=intl(phone); var web='https://wa.me/'+n;
+  return /Android/i.test(navigator.userAgent)?'intent://send/?phone='+n+'#Intent;scheme=whatsapp;package=com.whatsapp.w4b;S.browser_fallback_url='+encodeURIComponent(web)+';end':web; }
+function callPickSheet(p){ var tel=digits(p.phone);
+  sheet('<h3>📞 '+esc(drName(p))+' को कॉल करें</h3><p class="muted" style="margin:0">'+esc(p.phone)+'</p><div class="big-choice">'
+    +'<a href="tel:'+esc(tel)+'" target="_top" data-act="call" data-id="'+esc(p.id)+'" data-via="Phone"><span class="em">📱</span><span>SIM से कॉल<br><small class="muted" style="font-weight:500">Normal phone call</small></span></a>'
+    +'<a href="'+esc(waBizUrl(p.phone))+'" target="_blank" rel="noopener" data-act="call" data-id="'+esc(p.id)+'" data-via="WA Business"><span class="em">💼</span><span>WhatsApp Business से कॉल<br><small class="muted" style="font-weight:500">चैट खुलेगी — ऊपर 📞 दबाएं</small></span></a>'
+    +'<a href="'+esc('https://wa.me/'+intl(p.phone))+'" target="_blank" rel="noopener" data-act="call" data-id="'+esc(p.id)+'" data-via="WhatsApp"><span class="em">💬</span><span>WhatsApp से कॉल<br><small class="muted" style="font-weight:500">चैट खुलेगी — ऊपर 📞 दबाएं</small></span></a>'
+    +'</div><button class="btn" data-act="close-sheet">बंद करें</button>'); }
+function waSheet(p){
+  var t=[['🙏','परिचय / Introduction','intro',{}],['⏰','मिलने का समय / Appointment','appt',{date:p.nextDate,time:p.nextTime}],['💊','प्रोडक्ट फीडबैक / Feedback','feedback',{prods:D.products.slice(0,2)}],['🧾','ऑर्डर / स्टॉक','order',{}]];
+  if(p.type!=='Doctor') t=[t[0],t[1],t[3],t[2]];
+  sheet('<h3>💬 WhatsApp — '+esc(drName(p))+'</h3>'+langChips()+'<div class="big-choice">'+t.map(function(x){ var m=msg(x[2],p,x[3]); return '<a target="_blank" rel="noopener" data-act="wasend" data-id="'+esc(p.id)+'" href="'+esc(waUrl(p.phone,m))+'"><span class="em">'+x[0]+'</span><span>'+esc(x[1])+'<br><small class="muted" style="font-weight:500;white-space:pre-line">'+esc(m.split('\n\n')[1].slice(0,110))+'…</small></span></a>'; }).join('')
+    +((D.rateCard||[]).some(function(r){ return r.mrp||r.ptr||r.pts; })?'<a target="_blank" rel="noopener" data-act="wasend" data-id="'+esc(p.id)+'" href="'+esc(waUrl(p.phone,msg('rate',p,{})))+'"><span class="em">💰</span><span>रेट कार्ड / Rate list</span></a>':'')
+    +(D.library||[]).slice(0,6).map(function(f){ return '<a target="_blank" rel="noopener" data-act="wasend" data-id="'+esc(p.id)+'" href="'+esc(waUrl(p.phone,msg('brochure',p,{title:f.title,link:f.link})))+'"><span class="em">'+(f.type==='PDF'?'📄':'🖼️')+'</span><span>'+esc(f.title)+'<br><small class="muted" style="font-weight:500">कैटलॉग / ब्रोशर भेजें</small></span></a>'; }).join('')
+    +'<a target="_blank" rel="noopener" data-act="wasend" data-id="'+esc(p.id)+'" href="'+esc(waUrl(p.phone,''))+'"><span class="em">✍️</span>खुद लिखें / Write your own</a></div><button class="btn" data-act="close-sheet">बंद करें</button>');
+  waSheet.p=p;
+}
+
+// ---------- events ----------
+document.addEventListener('click', function(e){
+  var el=e.target.closest('[data-act]'); if(!el) return; var act=el.dataset.act, id=el.dataset.id;
+  if(act==='sheet-bg'){ if(e.target===el) closeSheet(); return; }
+  switch(act){
+    case 'back': keepVisitInputs(); keepAddInputs(); return back();
+    case 'home': V=null; A=null; return home();
+    case 'refresh': return boot(true);
+    case 'pick-area': return areaSheet();
+    case 'setarea': case 'setarea-new': { var a= act==='setarea'?el.dataset.v:($('#newArea').value||'').trim(); if(!a) return toast('Area ka naam likhiye');
+      return call('setArea', a).then(function(r){ D.todayArea=r; if(D.areas.indexOf(r)<0){ D.areas.push(r); D.areas.sort(); } closeSheet(); toast('📍 Aaj ka area: '+r); if(cur().s==='home') go('list','area'); else render(); }); }
+    case 'close-sheet': if(pendingCall){ pendingCall=null; } return closeSheet();
+    case 'list': L.q=''; L.type=''; return go('list', el.dataset.mode);
+    case 'ltype': L.type=el.dataset.type; return render();
+    case 'add': A=null; nav.push({s:'add', area:el.dataset.area||(cur().s==='area'?cur().a:'')}); render(); window.scrollTo(0,0); return;
+    case 'edit': A=null; return go('add', id);
+    case 'report': return go('report');
+    case 'tab': return tab(el.dataset.t);
+    case 'area': L.type=''; nav.push({s:'area', a:el.dataset.v}); render(); window.scrollTo(0,0); return;
+    case 'areaby': cur().by=el.dataset.v; return render();
+    case 'addmr-go': { M.tab='mrs'; if(cur().s!=='manager'){ nav=[{s:'home'},{s:'manager'}]; } render(); window.scrollTo(0,0); setTimeout(function(){ var n=$('#m_name'); if(n) n.focus(); }, 300); return; }
+    case 'manager': return go('manager');
+    case 'party': return go('party', id);
+    case 'visit': V=null; return go('visit', id);
+    case 'callpick': return callPickSheet(party(id));
+    case 'call': { var p=party(id), cv=el.dataset.via||'Phone'; closeSheet(); pendingCall={id:id, via:cv==='Phone'?'Phone':'WhatsApp', how:cv}; setTimeout(function(){ callSheet(p, cv==='Phone'?'Phone':'WACall'); }, 600); return; }
+    case 'wa': { var p2=party(id); return waSheet(p2); }
+    case 'wasend': { var p3=party(id); pendingCall={id:id, via:'WhatsApp'}; setTimeout(function(){ callSheet(p3,'WhatsApp'); }, 600); return; }
+    case 'walog': run('logCall',{partyId:id, via:'WhatsApp', outcome:'Message bheja', notes:'Visit ke baad dhanyavaad'}).then(function(){ D.stats.calls++; }).catch(function(){}); return;
+    case 'callres': { if(!pendingCall) return closeSheet(); var pc=pendingCall; pendingCall=null; var note=($('#callNote')||{}).value||''; if(pc.how && pc.how!=='Phone') note=[pc.how+' call',note].filter(Boolean).join(' · ');
+      closeSheet(); return run('logCall',{partyId:pc.id, via:pc.via, outcome:el.dataset.v, notes:note}).then(function(){ D.stats.calls++; toast('📞 Call save ho gayi'); var c=cur(); if(c.s==='party'){ c.hist=null; render(); } else if(c.s==='home') render(); }).catch(fail); }
+    // visit form
+    case 'vprod': { keepVisitInputs(); var pr=el.dataset.p, i=V.products.indexOf(pr); if(i>=0){ V.products.splice(i,1); delete V.qty[pr]; } else V.products.push(pr); return render(); }
+    case 'newprod': { keepVisitInputs(); sheet('<h3>➕ Naya product</h3><input class="in" id="np" placeholder="Product ka naam"><button class="btn pri" data-act="np-save">Jodein</button><button class="btn" data-act="close-sheet">Band karein</button>'); setTimeout(function(){ $('#np').focus(); },50); return; }
+    case 'np-save': { var n=($('#np').value||'').trim(); if(!n) return toast('Naam likhiye'); return call('saveProduct', n, true).then(function(){ if(D.products.indexOf(n)<0) D.products.push(n); if(V&&V.products.indexOf(n)<0) V.products.push(n); closeSheet(); render(); }); }
+    case 'vmood': keepVisitInputs(); V.interest = V.interest===el.dataset.v?'':el.dataset.v; return render();
+    case 'vassess': keepVisitInputs(); V.assessment = V.assessment===el.dataset.v?'':el.dataset.v; return render();
+    case 'q': { keepVisitInputs(); var k=el.dataset.p; V.qty[k]=Math.max(0,Math.min(999,(V.qty[k]||0)+(+el.dataset.d))); return render(); }
+    case 'vnext': keepVisitInputs(); V.nextDate=el.dataset.d; return render();
+    case 'vdisc': keepVisitInputs(); V.discount=el.dataset.v==='0'?'':el.dataset.v; return render();
+    case 'vmet': keepVisitInputs(); V.met=el.dataset.v==='1'; return render();
+    case 'vreason': keepVisitInputs(); V.reason = V.reason===el.dataset.v?'':el.dataset.v; return render();
+    case 'rcadd': keepVisitInputs(); V.rcpa.push({doctor:'', product:D.products[0]||'', qty:''}); render(); setTimeout(function(){ var x=document.querySelectorAll('.rcd'); if(x.length) x[x.length-1].focus(); }, 50); return;
+    case 'rcdel': keepVisitInputs(); V.rcpa.splice(+el.dataset.i,1); return render();
+    case 'vsave': { keepVisitInputs();
+      var orders=Object.keys(V.oqty).map(function(k){ return {product:k, qty:V.oqty[k]}; });
+      var rcpa=V.rcpa.filter(function(r){ return r.doctor.trim() && r.product; }).map(function(r){ return {doctor:r.doctor.trim(), product:r.product, qty:+r.qty||0}; });
+      if(!V.met && !V.reason) return toast('Kyon nahi mile? Ek reason chuniye');
+      if(V.met && !V.products.length && !V.remarks.trim() && !V.order.trim() && !orders.length && !rcpa.length && !(+V.discount) && !(V.scheme||'').trim()) return toast('Kam se kam ek product chuniye ya remark likhiye');
+      el.disabled=true; busy(true);
+      return locate().then(function(loc){ var payload={partyId:V.partyId, met:V.met, notMetReason:V.met?'':V.reason, products:V.met?V.products:[], interest:V.met?V.interest:'', assessment:V.met?V.assessment:'', remarks:V.remarks, order:V.met?V.order:'', nextDate:V.nextDate, nextTime:V.nextDate?V.nextTime:'',
+          orders:V.met?orders:[], rcpa:V.met?rcpa:[], discount:V.met?(+V.discount||0):0, scheme:V.met?(V.scheme||''):'',
+          samples:V.met?V.products.map(function(p){ return {product:p, qty:V.qty[p]||0}; }):[], lat:loc?loc.lat:'', lng:loc?loc.lng:''};
+        return run('saveVisit', payload).then(function(r){ var done={orderValue:r.orderValue, discount:V.discount, scheme:V.scheme, partyId:V.partyId, met:V.met, reason:V.reason, time:r.time, located:!!loc, products:V.products.slice(), nextDate:payload.nextDate, nextTime:payload.nextTime};
+          V=null; return refresh().then(function(){ busy(false); nav=[{s:'home'},{s:'done',a:done}]; render(); window.scrollTo(0,0); }); }); }).catch(function(e){ el.disabled=false; fail(e); }); }
+    // attendance
+    case 'daystart': { busy(true); return locate().then(function(loc){ return run('dayMark','start',loc); }).then(function(a){ busy(false); D.attendance=a; toast('🟢 दिन शुरू · '+a.start); render(); }).catch(fail); }
+    case 'dayend': return sheet('<h3>🔴 आज का काम खत्म करें?</h3><p class="muted" style="margin:0">Time aur location save hogi. Uske baad shaam ki report manager ko bhejein.</p><button class="btn pri" data-act="dayend-go">🔴 हाँ, दिन खत्म करें</button><button class="btn" data-act="close-sheet">अभी नहीं</button>');
+    case 'dayend-go': { closeSheet(); busy(true); return locate().then(function(loc){ return run('dayMark','end',loc); }).then(function(a){ busy(false); D.attendance=a; toast('✅ दिन खत्म · '+a.end); go('report'); }).catch(fail); }
+    // day plan
+    case 'plan': P.date=''; P.data=null; return (cur().s==='plan')?render():go('plan');
+    case 'pdate': P.date=el.dataset.v; P.data=null; return render();
+    case 'slotadd': P.tab='list'; P.nf=null; P.af=undefined; return slotSheet();
+    case 'sltab': keepNf(); var tm0=($('#slotT')||{}).value; P.tab=el.dataset.v; if(P.tab==='new' && !P.nf) P.nf={type:'Doctor',name:'',phone:'',area:planArea(),address:'',time:tm0}; else if(P.nf && tm0) P.nf.time=tm0; slotSheet(); var q0=$('#slotQ'); if(q0 && $('#slotT') && tm0) $('#slotT').value=tm0; return;
+    case 'slarea': { var t0=($('#slotT')||{}).value; P.af=el.dataset.v; slotSheet(); if(t0&&$('#slotT')) $('#slotT').value=t0; return; }
+    case 'slall': { var tm1=($('#slotT')||{}).value||'10:00'; var ar1=el.dataset.v;
+      return call('autoPlan', tm1, 30, planDate(), ar1).then(function(n){ closeSheet(); toast(n?'✅ '+ar1+' के '+n+' लोग '+tm1+' से हर 30 मिनट पर जुड़ गए':'Sab pehle se plan mein hain'); return reloadPlan(); }); }
+    case 'sltype': keepNf(); P.nf.type=el.dataset.t; return slotSheet();
+    case 'slnew': { keepNf(); var f=P.nf; if(!f.name.trim()) return toast('Naam likhiye'); if(!f.area.trim()) return toast('Area likhiye'); if(!f.time) return toast('Time chuniye');
+      var force=el.dataset.force==='1'; busy(true);
+      return run('saveParty',{type:f.type,name:f.name,phone:f.phone,area:f.area,city:(D.areaCity||{})[f.area]||'',address:f.address,category:'B',force:force}).then(function(pid){
+          return run('savePlanSlot',{time:f.time, partyId:pid, date:planDate()}); }).then(function(){ busy(false); P.nf=null; closeSheet(); toast('✅ '+f.name+' जुड़ गया · '+f.time); return refresh().then(reloadPlan); },
+        function(e){ busy(false); var m=(e&&e.message)||String(e); if(m.indexOf('DUP:')>=0){ $('#nfDup').innerHTML='<div class="card" style="border-color:var(--amb)">⚠️ '+esc(m.slice(m.indexOf('DUP:')+4))+'<br><small class="muted">Upar 📋 लिस्ट से चुनें, ya phir bhi naya jodein:</small><button class="btn sm full" style="margin-top:8px" data-act="slnew" data-force="1">➕ फिर भी नया जोड़ें</button></div>'; return; } fail(e); }); }
+    case 'slotone': { var po=party(id); return sheet('<h3>🗓️ '+esc(drName(po))+' — कब मिलेंगे?</h3><div class="two"><div class="field"><label for="slotD">📅 तारीख</label><input class="in" type="date" id="slotD" min="'+D.today+'" value="'+D.today+'"></div><div class="field"><label for="slotT">⏰ टाइम</label><input class="in" type="time" id="slotT" value="'+nextSlotTime()+'"></div></div><button class="btn pri" data-act="slotpick" data-id="'+esc(id)+'">✅ प्लान में जोड़ें</button><button class="btn" data-act="close-sheet">बंद करें</button>'); }
+    case 'slotpick': { var tm=($('#slotT')||{}).value||''; if(!tm) return toast('Time chuniye'); var sd=($('#slotD')||{}).value||planDate();
+      return call('savePlanSlot',{time:tm, partyId:id, date:sd}).then(function(){ closeSheet(); toast('🗓️ '+(sd===D.today?'आज':fdate(sd))+' '+tm+' पर प्लान में जुड़ गया'); if(cur().s==='plan') return reloadPlan(); return refresh().then(function(){ render(); }); }); }
+    case 'slotedit': { var se=(P.data.slots||[]).filter(function(x){ return x.id===id; })[0]; if(se) slotEditSheet(se); return; }
+    case 'slotsave': { var nt=$('#seT').value, nd=$('#seD').value; if(!nt||!nd) return toast('Time aur date chuniye');
+      return call('savePlanSlot',{id:id, time:nt, date:nd}).then(function(){ closeSheet(); toast('✅ बदल गया'); return reloadPlan(); }); }
+    case 'slotdel': if(!el.classList.contains('armed')){ el.classList.add('armed'); el.textContent='पक्का हटाएं? दोबारा दबाएं'; return; }
+      return call('deletePlanSlot', id).then(function(){ closeSheet(); toast('प्लान से हटा दिया'); return reloadPlan(); });
+    case 'autoplan': return autoSheet();
+    case 'autoplan-go': { var st=$('#apStart').value||'10:00', gp=$('#apGap').value||'30', ar=($('#apArea').value||'').trim(); if(!ar) return toast('Area chuniye');
+      return call('autoPlan', st, gp, planDate(), ar).then(function(n){ closeSheet(); toast(n?'⚡ '+n+' लोग प्लान में जुड़ गए':'Is area mein koi baaki nahi'); if(cur().s!=='plan'){ go('plan'); return; } return reloadPlan(); }); }
+    // tour plan
+    case 'tour': T.rows=null; T.month=''; return go('tour');
+    case 'tmonth': T.month=el.dataset.v; T.rows=null; return render();
+    case 'tday': { var dd0=el.dataset.d; return call('saveTourPlan', T.month, tourEntries()).then(function(){ T.rows=null; P.date=dd0; P.data=null; go('plan'); }); }
+    case 'tcopy': { var fm=monthAdd(T.month,-1); return call('saveTourPlan', T.month, tourEntries()).then(function(){ return call('copyTourMonth', fm, T.month); }).then(function(r){ toast(r.days?'♻️ '+r.days+' दिन का प्लान कॉपी हुआ · '+r.slots+' मुलाकातें':'कोई खाली दिन नहीं मिला'); T.rows=null; return refresh().then(function(){ render(); }); }); }
+    case 'tsave': { var ent=tourEntries();
+      return call('saveTourPlan', T.month, ent).then(function(){ toast('✅ टूर प्लान सेव · Manager approval ke liye gaya'); T.rows=null; return refresh().then(function(){ render(); }); }); }
+    case 'stock': return go('stock');
+    case 'library': return go('library');
+    case 'libdel': if(!el.classList.contains('armed')){ el.classList.add('armed'); el.textContent='पक्का?'; return; } return call('deleteLibrary', id).then(function(l){ D.library=l; toast('हटा दिया'); render(); });
+    case 'summary': SM.data=null; SM.mr=''; SM.month=''; return go('summary');
+    case 'smmonth': SM.month=el.dataset.v; SM.data=null; return render();
+    case 'mrate': { var g=function(k){ return ($('#rt_'+k+'_'+el.dataset.i)||{}).value||''; };
+      return call('setRate', el.dataset.p, {pack:g('pack'), mrp:g('mrp'), ptr:g('ptr'), pts:g('pts')}).then(function(){ toast('💰 रेट सेव'); return refresh().then(function(){ return loadMgr(); }); }); }
+    case 'import': I={rows:null,file:'',mr:'',area:''}; return go('import');
+    case 'impgo': { var ia=$('#impArea'), im=$('#impMr'); if(ia) I.area=ia.value.trim(); if(im) I.mr=im.value;
+      var noA=I.rows.filter(function(r){ return !r.area; }).length; if(noA && !I.area) return toast('Khaali area waalon ka area likhiye');
+      var list=I.rows.map(function(r){ var o={}; for(var k in r) o[k]=r[k]; if(!o.area) o.area=I.area; return o; });
+      return call('importParties', list, I.mr||'').then(function(r){ I={rows:null,file:'',mr:'',area:''}; return refresh().then(function(){ toast('✅ '+r.added+' जुड़ गए'+(r.skipped?' · '+r.skipped+' पहले से थे / अधूरे':'')); nav=[{s:'home'},{s:'areas'}]; render(); window.scrollTo(0,0); }); }); }
+    // add form
+    case 'atype': keepAddInputs(); A.type=el.dataset.t; return render();
+    case 'aspec': keepAddInputs(); A.speciality = A.speciality===el.dataset.v?'':el.dataset.v; return render();
+    case 'acat': keepAddInputs(); A.category=el.dataset.v; return render();
+    case 'apin': { keepAddInputs(); busy(true); return locate().then(function(l){ busy(false); if(!l) return toast('Location nahi mili. Phone ki location ON karein.'); A.lat=l.lat; A.lng=l.lng; toast('📍 Location lag gayi'); render(); }); }
+    case 'asave': { keepAddInputs(); if(!A.name.trim()) return toast('Naam likhiye'); if(!A.area.trim()) return toast('Area likhiye'); return saveAdd(false); }
+    case 'asave-force': return A?saveAdd(true):closeSheet();
+    // manager
+    case 'mtab': M.tab=el.dataset.t; M.only=''; return render();
+    case 'mmissed': M.tab='missed'; M.only=id; render(); window.scrollTo(0,0); return;
+    case 'mmissed-all': M.only=''; return render();
+    case 'mopen': M.open[id]=!M.open[id]; return render();
+    case 'maddmr': { var nm=$('#m_name').value.trim(), ph=$('#m_phone').value.trim(); if(!nm) return toast('Naam likhiye');
+      return call('addMR',{name:nm, phone:ph}).then(function(){ toast('✅ MR jud gaya. Ab link bhejein.'); return loadMgr(); }); }
+    case 'medit': { var me=M.data.mrs.filter(function(x){ return x.id===id; })[0];
+      return sheet('<h3>✏️ '+esc(me.name)+(me.role==='Manager'?' (Manager)':'')+'</h3><div class="field"><label for="me_name">नाम / Name</label><input class="in" id="me_name" value="'+esc(me.name)+'"></div><div class="field"><label for="me_phone">📞 Mobile (WhatsApp)</label><input class="in" id="me_phone" type="tel" inputmode="numeric" value="'+esc(me.phone||'')+'"></div>'+(me.role==='Manager'?'<p class="muted" style="margin:0;font-size:.84rem">MR ki shaam ki report isi number pe jaayegi.</p>':'')+'<button class="btn pri" data-act="medit-go" data-id="'+esc(id)+'">💾 सेव करें</button><button class="btn" data-act="close-sheet">बंद करें</button>'); }
+    case 'medit-go': { var en=$('#me_name').value.trim(), ep=$('#me_phone').value.trim(); if(!en) return toast('Naam likhiye');
+      return call('editMR', id, {name:en, phone:ep}).then(function(){ closeSheet(); toast('✅ बदल गया'); return refresh().then(function(){ return loadMgr(); }); }); }
+    case 'mremove': { var mr0=M.data.mrs.filter(function(x){ return x.id===id; })[0]; var others=M.data.mrs.filter(function(x){ return x.id!==id && x.active; });
+      return sheet('<h3>🗑️ '+esc(mr0.name)+' को टीम से हटाएं?</h3><p class="muted" style="margin:0">Unka link turant band ho jayega. Purani visits, calls, samples ka record sheet mein safe rahega.</p><div class="field"><label for="rm_to">उनके डॉक्टर / केमिस्ट किसे दें?</label><select class="in" id="rm_to">'+others.map(function(x){ return '<option value="'+esc(x.id)+'">'+esc(x.name)+(x.role==='Manager'?' (Manager)':'')+'</option>'; }).join('')+'</select></div><button class="btn red" data-act="mremove-go" data-id="'+esc(id)+'">🗑️ हाँ, हटाएं</button><button class="btn" data-act="close-sheet">नहीं</button>'); }
+    case 'mremove-go': return call('removeMR', id, $('#rm_to').value).then(function(r){ closeSheet(); toast('हटा दिया · '+r.moved+' doctor '+r.to+' ko diye'); return refresh().then(function(){ return loadMgr(); }); });
+    case 'mbackup': return call('backupSheet').then(function(u){ M.backup=u; toast('💾 Backup copy ban gayi'); render(); });
+    case 'mactive': return call('setMRActive', id, el.dataset.on==='true').then(function(){ toast('Ho gaya'); return loadMgr(); });
+    case 'mreset': if(!el.classList.contains('armed')){ el.classList.add('armed'); el.textContent='Pakka? Purana link band hoga'; return; } return call('resetMRLink', id).then(function(){ toast('Naya link ban gaya'); return loadMgr(); });
+    case 'maddprod': { var pn=$('#m_prod').value.trim(); if(!pn) return toast('Naam likhiye'); return call('saveProduct', pn, true).then(function(){ toast('✅ Product jud gaya'); return refresh().then(function(){ return loadMgr(); }); }); }
+    case 'mprod': return call('saveProduct', el.dataset.p, el.dataset.on==='true').then(function(){ return refresh().then(function(){ return loadMgr(); }); });
+    case 'mtarget': return call('setTargets', id, $('#tgd_'+id).value, $('#tgc_'+id).value).then(function(){ toast('🎯 टारगेट सेव'); return loadMgr(); });
+    case 'mtour': return call('approveTour', id, M.data.month).then(function(){ toast('✅ टूर प्लान approve'); return loadMgr(); });
+    case 'missue': { var q=+$('#si_q').value; if(!q) return toast('Kitne sample, ye likhiye'); var mid=$('#si_mr').value, pr=$('#si_p').value;
+      return call('issueStock',{mrId:mid, product:pr, qty:q}).then(function(){ toast('✅ '+q+' '+pr+' दे दिए'); return refresh().then(function(){ return loadMgr(); }); }); }
+    case 'pdel': { var pd=party(id); return sheet('<h3>🗑️ '+esc(drName(pd))+' को हटाएं?</h3><p class="muted" style="margin:0">List aur aage ke plan se hat jayega. Purani visits ka record Google Sheet mein rahega.</p><button class="btn red" data-act="pdel-go" data-id="'+esc(id)+'">🗑️ हाँ, हटाएं</button><button class="btn" data-act="close-sheet">नहीं</button>'); }
+    case 'pdel-go': return call('deleteParty', id).then(function(){ closeSheet(); return refresh(); }).then(function(){ toast('हटा दिया'); back(); });
+    case 'fdel': if(!el.classList.contains('armed')){ el.classList.add('armed'); el.textContent='पक्का?'; return; }
+      return call('deleteFile', id).then(function(){ var c=cur(); c.files=null; toast('File हटा दी'); render(); });
+    case 'lang': LANG=el.dataset.v; store('mrlang', LANG); if($('#layer .sheet') && waSheet.p) return waSheet(waSheet.p); return render();
+    case 'copy': { var txt=el.dataset.text; if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ toast('📋 Copy ho gaya'); }, function(){ toast('Copy nahi hua — text ko daba ke rakhein aur copy karein'); }); } else toast('Copy nahi hua'); return; }
+  }
+});
+document.addEventListener('input', function(e){ if(e.target.id==='areaQ'){ filterAreas(e.target.value); return; }
+  if(e.target.id==='slotQ'){ var q=e.target.value.trim().toLowerCase(); document.querySelectorAll('#slotList [data-name]').forEach(function(b){ b.hidden=!!q && b.dataset.name.indexOf(q)<0; }); document.querySelectorAll('#slotList [data-grp]').forEach(function(g){ g.hidden=!g.querySelector('[data-name]:not([hidden])'); }); return; } if(e.target.id==='q'){ L.q=e.target.value; var pos=e.target.selectionStart; render(); var q=$('#q'); q.focus(); try{ q.setSelectionRange(pos,pos); }catch(x){} } });
+function fileToB64(file){ return new Promise(function(res, rej){
+  if(file.type==='application/pdf'){ if(file.size>10*1024*1024) return rej(new Error('PDF 10 MB se chhoti honi chahiye'));
+    var r=new FileReader(); r.onload=function(){ res({data:String(r.result).split(',')[1], mime:'application/pdf', name:file.name}); }; r.onerror=function(){ rej(new Error('File padh nahi paaye')); }; r.readAsDataURL(file); return; }
+  if(!/^image\//.test(file.type)) return rej(new Error('Sirf photo ya PDF'));
+  var img=new Image(), u=URL.createObjectURL(file);
+  img.onload=function(){ var m=1600, w=img.width, h=img.height, k=Math.min(1, m/Math.max(w,h)); var cv=document.createElement('canvas'); cv.width=Math.round(w*k); cv.height=Math.round(h*k);
+    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height); URL.revokeObjectURL(u); res({data:cv.toDataURL('image/jpeg',0.82).split(',')[1], mime:'image/jpeg', name:(file.name||'photo').replace(/\.[^.]+$/,'')+'.jpg'}); };
+  img.onerror=function(){ rej(new Error('Photo khul nahi payi')); }; img.src=u; }); }
+document.addEventListener('change', function(e){
+  if(e.target.id==='fileIn' && e.target.files[0]){ var pid=e.target.dataset.id; busy(true); fileToB64(e.target.files[0]).then(function(f){ f.partyId=pid; return run('uploadFile', f); }).then(function(){ busy(false); toast('📎 File save ho gayi'); var c=cur(); c.files=null; render(); }).catch(fail); return; }
+  if(e.target.id==='libIn' && e.target.files[0]){ LIBUP.title=($('#lb_title').value||'').trim(); LIBUP.product=$('#lb_prod').value; busy(true);
+    fileToB64(e.target.files[0]).then(function(f){ f.title=LIBUP.title||f.name.replace(/\.[^.]+$/,''); f.product=LIBUP.product; return run('uploadLibrary', f); }).then(function(l){ busy(false); D.library=l; LIBUP={title:'',product:''}; toast('📚 अपलोड हो गया · सब MR को दिखेगा'); render(); }).catch(fail); return; }
+  if(e.target.id==='sm_mr'){ SM.mr=e.target.value; SM.data=null; render(); return; }
+  if(e.target.id==='impIn' && e.target.files[0]){ readImport(e.target.files[0]); return; } if(e.target.id==='m_date'){ loadMgr(e.target.value); } if(e.target.id==='p_date' && e.target.value){ P.date=e.target.value<D.today?D.today:e.target.value; P.data=null; render(); } if(e.target.id==='v_nd'){ keepVisitInputs(); render(); } });
+
+// ---------- boot ----------
+function refresh(){ return run('boot').then(function(d){ D=d; }); }
+function boot(again){
+  if(!KEY){ gate('🔗','Apna link kholiye','Ye app sirf aapke personal link se khulta hai. Manager se apna link WhatsApp pe maangiye.'); return; }
+  if(again) busy(true);
+  run('boot').then(function(d){ D=d; busy(false); if(!again || !nav.length) nav=[{s:'home'}]; if(again && cur().s==='manager') M.data=null; render(); }, fail);
+}
+if(window.__DEMO_KEYS) window.__switchDemo=function(role){ KEY=window.__DEMO_KEYS[role]; nav=[]; M={tab:'team',date:'',data:null,open:{}}; L={q:'',type:'',mode:'area'}; V=null; A=null; D=null; $('#layer').innerHTML=''; boot(); };
+boot();
+})();
+</script>
+</body>
+</html>
