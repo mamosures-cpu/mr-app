@@ -8,7 +8,7 @@ import json, os, sys
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-API_URL = sys.argv[1] if len(sys.argv) > 1 else 'https://script.google.com/macros/s/AKfycbwkJFa5TRRrz328YZqrcTKR3cghqAj9-qLF251QRfTE9uDMOxE4ZitFI6FDYaZrBnTB/exec'
+API_URL = sys.argv[1] if len(sys.argv) > 1 else 'https://script.google.com/macros/s/AKfycbwFr9beoSX7Lu8hQJo-8j0WR9d7qTcctEkPTUdVPD0rOYlI89Iao8thNy1CFPTgQ3dH/exec'
 APP_NAME = 'Shashvi MR App'
 OUT = os.path.join(HERE, 'web')
 os.makedirs(OUT, exist_ok=True)
