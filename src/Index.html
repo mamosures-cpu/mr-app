@@ -466,19 +466,23 @@ function sPlan(){
   var dl=isToday?'आज':dd===addDays(D.today,1)?'कल':fdate(dd);
   var h=top('🗓️ '+(isToday?'आज का प्लान':dl+' का प्लान'),'Day plan · '+fdate(dd),true)+'<div class="stack">';
   h+='<div class="chips">'+[[0,'आज'],[1,'कल'],[2,'परसों']].map(function(o){ var d=addDays(D.today,o[0]); return '<button class="chip" data-act="pdate" data-v="'+d+'" aria-pressed="'+(dd===d)+'">'+o[1]+' · '+esc(fdate(d))+'</button>'; }).join('')+'</div>';
-  h+='<div class="field"><label for="p_date">📅 कोई और तारीख / Other date</label><input class="in" type="date" id="p_date" min="'+D.today+'" value="'+esc(dd)+'"></div>';
+  h+='<div class="two"><button class="btn" data-act="pdate" data-v="'+addDays(dd,-1)+'">◀ पिछला दिन</button><button class="btn" data-act="pdate" data-v="'+addDays(dd,1)+'">अगला दिन ▶</button></div>';
+  h+='<div class="field"><label for="p_date">📅 कोई भी तारीख (पुरानी भी) / Any date</label><input class="in" type="date" id="p_date" value="'+esc(dd)+'"></div>';
+  var past=dd<D.today;
+  if(past) h+='<div class="hint" style="border-left:4px solid var(--amb)">👀 <b>बीता हुआ दिन</b> — यह प्लान सिर्फ देखने के लिए है।<br><small class="muted">Purana din, sirf dekh sakte hain. Badal nahi sakte.</small>'+(isToday?'':' <button class="btn sm" data-act="pdate" data-v="'+D.today+'" style="margin-top:6px">🏠 आज पर वापस</button>')+'</div>';
   var r=P.data; if(!r || r.date!==dd) return h+'<div class="card"><p class="muted">Loading…</p></div></div>';
   var pl=r.slots, done=pl.filter(function(s){ return s.status==='done'; }).length;
   var area=isToday?D.todayArea:r.area;
-  h+='<div class="hint">⏰ किससे <b>कितने बजे</b> मिलना है, यहाँ लिखें। लिस्ट से चुनें या <b>नया डॉक्टर</b> यहीं जोड़ें। टाइम पर दबाकर बदलें या हटाएं।'+(area?'<br>📍 एरिया: <b>'+esc(area)+'</b>':'')+'</div>';
-  h+='<div class="two"><button class="btn pri" data-act="slotadd">➕ जोड़ें / Add</button><button class="btn" data-act="autoplan">⚡ अपने आप बनाएं</button></div>';
+  if(past){ if(area) h+='<div class="hint">📍 एरिया: <b>'+esc(area)+'</b></div>'; }
+  else { h+='<div class="hint">⏰ किससे <b>कितने बजे</b> मिलना है, यहाँ लिखें। लिस्ट से चुनें या <b>नया डॉक्टर</b> यहीं जोड़ें। टाइम पर दबाकर बदलें या हटाएं।'+(area?'<br>📍 एरिया: <b>'+esc(area)+'</b>':'')+'</div>';
+  h+='<div class="two"><button class="btn pri" data-act="slotadd">➕ जोड़ें / Add</button><button class="btn" data-act="autoplan">⚡ अपने आप बनाएं</button></div>'; }
   if(pl.length) h+='<div class="stats"><div class="stat"><b>'+pl.length+'</b><span>🗓️ प्लान</span></div><div class="stat"><b>'+done+'</b><span>✅ पूरा</span></div><div class="stat"><b>'+(pl.length-done)+'</b><span>⏳ बाकी</span></div></div>';
-  if(!pl.length) h+='<div class="card empty"><span class="em">🗓️</span><p>इस दिन का प्लान खाली है।<br><b>➕ जोड़ें</b> से डॉक्टर और टाइम डालें, या <b>⚡ अपने आप बनाएं</b>।</p></div>';
+  if(!pl.length) h+='<div class="card empty"><span class="em">🗓️</span><p>'+(past?'इस दिन का कोई प्लान नहीं था।':'इस दिन का प्लान खाली है।<br><b>➕ जोड़ें</b> से डॉक्टर और टाइम डालें, या <b>⚡ अपने आप बनाएं</b>।')+'</p></div>';
   var areas=[]; pl.forEach(function(s){ if(areas.indexOf(s.area||'')<0) areas.push(s.area||''); });
   areas.forEach(function(a){
     if(areas.length>1) h+='<div class="lbl" style="margin-top:4px">📍 '+esc(a||'बिना एरिया')+' <span class="muted" style="font-weight:500">· '+pl.filter(function(s){ return (s.area||'')===a; }).length+'</span></div>';
     pl.filter(function(s){ return (s.area||'')===a; }).forEach(function(s){ var p=party(s.partyId)||{name:s.party,type:s.type};
-      h+='<div class="slot '+esc(s.status)+'"><button class="tm" data-act="slotedit" data-id="'+esc(s.id)+'" style="border:0;background:var(--bg);border-radius:10px;padding:6px 4px;cursor:pointer;font:inherit;font-weight:800" aria-label="Time badlein">'+esc(s.time)+'<br><small style="font-weight:600;color:var(--muted)">✏️</small></button><div class="g" data-act="party" data-id="'+esc(s.partyId)+'"><b>'+(TYPE[s.type]?TYPE[s.type].em:'')+' '+esc(drName(p))+'</b><div class="muted" style="font-size:.82rem">'+esc([s.area,p.phone].filter(Boolean).join(' · '))+'</div><div style="margin-top:3px">'+slotPill(s.status)+'</div></div>'
+      h+='<div class="slot '+esc(s.status)+'"><button class="tm" data-act="'+(past?'':'slotedit')+'" data-id="'+esc(s.id)+'" style="border:0;background:var(--bg);border-radius:10px;padding:6px 4px;cursor:pointer;font:inherit;font-weight:800" aria-label="Time badlein">'+esc(s.time)+'<br><small style="font-weight:600;color:var(--muted)">✏️</small></button><div class="g" data-act="party" data-id="'+esc(s.partyId)+'"><b>'+(TYPE[s.type]?TYPE[s.type].em:'')+' '+esc(drName(p))+'</b><div class="muted" style="font-size:.82rem">'+esc([s.area,p.phone].filter(Boolean).join(' · '))+'</div><div style="margin-top:3px">'+slotPill(s.status)+'</div></div>'
         +(isToday&&s.status!=='done'?'<button class="btn sm pri" data-act="visit" data-id="'+esc(s.partyId)+'" aria-label="Visit">✅ मिले</button>':'')
         +(digits(p.phone)?'<button class="btn sm" data-act="callpick" data-id="'+esc(s.partyId)+'" aria-label="Call">📞</button>':'')+'</div>'; });
   });
@@ -642,23 +646,26 @@ function monthAdd(ym, n){ var y=+ym.slice(0,4), m=+ym.slice(5,7)-1+n; y+=Math.fl
 function sTour(){
   if(!T.month) T.month=D.today.slice(0,7);
   var h=top('📅 टूर प्लान / Tour plan', monthName(T.month), true)+'<div class="stack">';
-  h+='<div class="chips">'+[0,1].map(function(n){ var m=monthAdd(D.today.slice(0,7),n); return '<button class="chip" data-act="tmonth" data-v="'+m+'" aria-pressed="'+(T.month===m)+'">'+(n?'अगला महीना · ':'यह महीना · ')+monthName(m)+'</button>'; }).join('')+'</div>';
-  h+='<div class="hint">📅 हर दिन का <b>एरिया</b> लिखें, फिर <b>👥 डॉक्टर</b> दबाकर उस दिन किस डॉक्टर / केमिस्ट से कितने बजे मिलना है, जोड़ें (नया नाम, फोन, पता भी)।<br>♻️ <b>पिछले महीने से कॉपी</b> दबाएं — हर सोमवार, मंगलवार… का प्लान अपने आप आ जाएगा।</div>';
+  var thisM=D.today.slice(0,7), oldM=T.month<thisM;
+  h+='<div class="chips">'+[-1,0,1].map(function(n){ var m=monthAdd(thisM,n); return '<button class="chip" data-act="tmonth" data-v="'+m+'" aria-pressed="'+(T.month===m)+'">'+(n<0?'पिछला महीना · ':n?'अगला महीना · ':'यह महीना · ')+monthName(m)+'</button>'; }).join('')+'</div>';
+  h+='<div class="two"><button class="btn" data-act="tmonth" data-v="'+monthAdd(T.month,-1)+'">◀ '+esc(monthName(monthAdd(T.month,-1)))+'</button><button class="btn" data-act="tmonth" data-v="'+monthAdd(T.month,1)+'">'+esc(monthName(monthAdd(T.month,1)))+' ▶</button></div>';
+  if(oldM) h+='<div class="hint" style="border-left:4px solid var(--amb)">👀 <b>बीता हुआ महीना</b> — सिर्फ देखने के लिए। किसी दिन पर 👀 दबाकर उस दिन का प्लान देखें।<br><small class="muted">Purana mahina, sirf dekh sakte hain.</small></div>';
+  else h+='<div class="hint">📅 हर दिन का <b>एरिया</b> लिखें, फिर <b>👥 डॉक्टर</b> दबाकर उस दिन किस डॉक्टर / केमिस्ट से कितने बजे मिलना है, जोड़ें (नया नाम, फोन, पता भी)।<br>♻️ <b>पिछले महीने से कॉपी</b> दबाएं — हर सोमवार, मंगलवार… का प्लान अपने आप आ जाएगा।</div>';
   if(!T.rows) return h+'<div class="card"><p class="muted">Loading…</p></div></div>';
   var by={}; T.rows.forEach(function(r){ by[r.date]=r; });
   var withArea=T.rows.filter(function(r){ return r.area; });
   var st=withArea.length?(withArea.every(function(r){ return r.status==='Approved'; })?'<span class="pill done">✅ Manager ne approve kiya</span>':'<span class="pill due">⏳ Approval baaki</span>'):'<span class="pill cat">अभी नहीं बना</span>';
   var totalDocs=T.rows.reduce(function(s,r){ return s+r.slots.length; },0);
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'+st+'<span class="pill cat">📍 '+withArea.length+' दिन · 👥 '+totalDocs+' मुलाकातें</span></div>';
-  h+='<button class="btn full" data-act="tcopy">♻️ पिछले महीने ('+esc(monthName(monthAdd(T.month,-1)))+') से कॉपी करें</button>';
+  if(!oldM) h+='<button class="btn full" data-act="tcopy">♻️ पिछले महीने ('+esc(monthName(monthAdd(T.month,-1)))+') से कॉपी करें</button>';
   h+='<div class="card" style="padding:6px 14px"><datalist id="tourAreas">'+D.areas.map(function(a){ return '<option value="'+esc(a)+'"></option>'; }).join('')+'</datalist>';
   var y=+T.month.slice(0,4), mo=+T.month.slice(5,7), n=new Date(y,mo,0).getDate();
   for(var d=1; d<=n; d++){ var ds=T.month+'-'+pad(d); var wd=new Date(ds+'T12:00:00').getDay(); var r=by[ds]||{slots:[]}; var past=ds<D.today;
-    h+='<div class="trow'+(wd===0?' sun':'')+'" style="flex-wrap:wrap'+(past?';opacity:.55':'')+'"><span class="d"><b>'+d+'</b> '+WEEK[wd]+(ds===D.today?' <span class="pill done">आज</span>':'')+'</span><input class="in tin" style="flex:1;min-width:0" data-d="'+ds+'" list="tourAreas" value="'+esc(r.area||'')+'" placeholder="'+(wd===0?'छुट्टी':'एरिया')+'" autocomplete="off">'
-      +(past?'<span class="btn sm" style="visibility:hidden">👥</span>':'<button class="btn sm'+(r.slots.length?' pri':'')+'" data-act="tday" data-d="'+ds+'" aria-label="Doctors">👥 '+(r.slots.length||'+')+'</button>')
+    h+='<div class="trow'+(wd===0?' sun':'')+'" style="flex-wrap:wrap'+(past?';opacity:.55':'')+'"><span class="d"><b>'+d+'</b> '+WEEK[wd]+(ds===D.today?' <span class="pill done">आज</span>':'')+'</span><input class="in tin" style="flex:1;min-width:0" data-d="'+ds+'" list="tourAreas" value="'+esc(r.area||'')+'" placeholder="'+(wd===0?'छुट्टी':'एरिया')+'" autocomplete="off"'+(oldM?' readonly':'')+'>'
+      +(past?(r.slots.length?'<button class="btn sm" data-act="tpast" data-d="'+ds+'" aria-label="Dekhein">👀 '+r.slots.length+'</button>':'<span class="btn sm" style="visibility:hidden">👥</span>'):'<button class="btn sm'+(r.slots.length?' pri':'')+'" data-act="tday" data-d="'+ds+'" aria-label="Doctors">👥 '+(r.slots.length||'+')+'</button>')
       +(r.status==='Approved'?'<span title="Approved">✅</span>':r.area?'<span title="Pending">⏳</span>':'')
       +(r.slots.length?'<div class="muted" style="flex-basis:100%;font-size:.8rem;padding-left:86px">'+esc(r.slots.slice(0,3).map(function(x){ return x.time+' '+x.party; }).join(' · ')+(r.slots.length>3?' +'+(r.slots.length-3)+' और':''))+'</div>':'')+'</div>'; }
-  h+='</div><button class="btn pri full" data-act="tsave" style="min-height:56px">💾 सेव करें / Save tour plan</button>';
+  h+='</div>'+(oldM?'':'<button class="btn pri full" data-act="tsave" style="min-height:56px">💾 सेव करें / Save tour plan</button>');
   return h+'</div>';
 }
 function tourEntries(){ var ent=[]; document.querySelectorAll('.tin').forEach(function(e){ ent.push({date:e.dataset.d, area:e.value.trim()}); }); return ent; }
@@ -1129,6 +1136,7 @@ document.addEventListener('click', function(e){
     // tour plan
     case 'tour': T.rows=null; T.month=''; return go('tour');
     case 'tmonth': T.month=el.dataset.v; T.rows=null; return render();
+    case 'tpast': P.date=el.dataset.d; P.data=null; return go('plan');
     case 'tday': { var dd0=el.dataset.d; return call('saveTourPlan', T.month, tourEntries()).then(function(){ T.rows=null; P.date=dd0; P.data=null; go('plan'); }); }
     case 'tcopy': { var fm=monthAdd(T.month,-1); return call('saveTourPlan', T.month, tourEntries()).then(function(){ return call('copyTourMonth', fm, T.month); }).then(function(r){ toast(r.days?'♻️ '+r.days+' दिन का प्लान कॉपी हुआ · '+r.slots+' मुलाकातें':'कोई खाली दिन नहीं मिला'); T.rows=null; return refresh().then(function(){ render(); }); }); }
     case 'tsave': { var ent=tourEntries();
@@ -1198,7 +1206,7 @@ document.addEventListener('change', function(e){
   if(e.target.id==='libIn' && e.target.files[0]){ LIBUP.title=($('#lb_title').value||'').trim(); LIBUP.product=$('#lb_prod').value; busy(true);
     fileToB64(e.target.files[0]).then(function(f){ f.title=LIBUP.title||f.name.replace(/\.[^.]+$/,''); f.product=LIBUP.product; return run('uploadLibrary', f); }).then(function(l){ busy(false); D.library=l; LIBUP={title:'',product:''}; toast('📚 अपलोड हो गया · सब MR को दिखेगा'); render(); }).catch(fail); return; }
   if(e.target.id==='sm_mr'){ SM.mr=e.target.value; SM.data=null; render(); return; }
-  if(e.target.id==='impIn' && e.target.files[0]){ readImport(e.target.files[0]); return; } if(e.target.id==='m_date'){ loadMgr(e.target.value); } if(e.target.id==='p_date' && e.target.value){ P.date=e.target.value<D.today?D.today:e.target.value; P.data=null; render(); } if(e.target.id==='v_nd'){ keepVisitInputs(); render(); } });
+  if(e.target.id==='impIn' && e.target.files[0]){ readImport(e.target.files[0]); return; } if(e.target.id==='m_date'){ loadMgr(e.target.value); } if(e.target.id==='p_date' && e.target.value){ P.date=e.target.value; P.data=null; render(); } if(e.target.id==='v_nd'){ keepVisitInputs(); render(); } });
 
 // ---------- boot ----------
 // Last boot data is kept on the phone, so the app opens instantly and updates itself in the background.
